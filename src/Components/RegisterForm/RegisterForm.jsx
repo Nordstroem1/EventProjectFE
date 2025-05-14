@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Select from "react-select";
 import countryList from "react-select-country-list";
-import ReactCountryFlag from "react-country-flag";
 import { AnimatePresence, motion } from "framer-motion";
 import "./RegisterForm.css";
 import "../../index.css";
 import { PiPersonSimpleHikeThin } from "react-icons/pi";
+import CityAutocomplete from "./CityAutoComplete";
 
 const containerVariants = {
   hidden: { opacity: 0, y: -100 },
@@ -42,7 +42,6 @@ const RegisterForm = () => {
     city: "",
     country: "",
   });
-  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -52,6 +51,7 @@ const RegisterForm = () => {
     }));
   };
 
+  const [error, setError] = useState("");
   const options = countryList().getData();
 
   const handleCountryChange = (selectedOption) => {
@@ -70,8 +70,7 @@ const RegisterForm = () => {
       !formData.username ||
       !formData.password ||
       !formData.passwordConfirm ||
-      !formData.city ||
-      !formData.country
+      !formData.city
     ) {
       setError("Please fill in all required fields.");
       return;
@@ -194,48 +193,18 @@ const RegisterForm = () => {
                 autoComplete="new-password"
               />
             </motion.div>
-            <motion.div
-              variants={childVariants}
-              className="form-group form-group-column"
-            >
-              <label>City</label>
-              <input
-                type="text"
-                name="city"
+            <motion.div variants={childVariants}>
+              <div className="form-group form-group-column">
+                <label>City</label>
+              </div>
+              <CityAutocomplete
                 value={formData.city}
-                onChange={handleChange}
-                required
-                maxLength={50}
-                placeholder="Your City..."
-                list="cityOptions"
-              />
-              <datalist id="cityOptions">
-                {cities.slice(0, 100).map((city) => (
-                  <option key={city.id} value={city.name} />
-                ))}
-              </datalist>
-            </motion.div>
-            <motion.div
-              variants={childVariants}
-              className="form-group form-group-column"
-            >
-              <label>Country</label>
-              <Select
-                className="my-custom-select"
-                options={options}
-                onChange={handleCountryChange}
-                placeholder="Select a country"
-                isSearchable
-                formatOptionLabel={(option) => (
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <ReactCountryFlag
-                      countryCode={option.value}
-                      svg
-                      style={{ width: "1.5em", height: "1.5em" }}
-                    />
-                    <span style={{ marginLeft: "0.5em" }}>{option.label}</span>
-                  </div>
-                )}
+                onChange={(val) =>
+                  setFormData((prevState) => ({
+                    ...prevState,
+                    city: val,
+                  }))
+                }
               />
             </motion.div>
             <motion.div

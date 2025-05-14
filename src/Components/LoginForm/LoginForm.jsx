@@ -97,7 +97,7 @@ const LoginForm = () => {
       <motion.div className="text-center mb-4 Login-Form-Header">
         <h1 className="text-center mb-4">Welcome</h1>
         <p className="text-center mb-4">
-          Create your account or log in to access your profile and events.
+          Create your account or log in to access events near you.
         </p>
       </motion.div>
       <h2>Sign in</h2>
