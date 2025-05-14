@@ -1,8 +1,7 @@
 body{
   margin: 0;
   padding: 0;
-  font-family: 'Arial', sans-serif;
-  background-color: #6a93e6;
+  background-color: #ffffff;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -11,20 +10,35 @@ body{
   text-align: center;
 }
 .btn-primary {
-  background-color:#2563EB; 
+  background-color: #1893fe; 
+  border: 1px solid #6fb6f5;
   color: #ffffff;
-  border: none;
   padding: 10px 20px;
   border-radius: 4px;
   cursor: pointer;
 }
 .btn-primary:active {
-  background-color: #0c06ca;  
+  background-color: #87c3f8;  
   transform: scale(1.02);
   transition: transform 0.1s;
 }
 
 * {
-  font-family: 'Arial', sans-serif;
-  color: #000000;
+  font-family: var(--font-satoshi), system-ui, sans-serif;
+}
+h1 {
+  font-weight: 350;
+}
+h2 {
+  font-weight: 350;
+}
+
+.Back-Btn{
+   background-color: #6c757d;
+  border: 1px solid #6c757d;
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
