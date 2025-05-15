@@ -1,0 +1,38 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  padding: 1rem;
+  background: #fff;
+  z-index: 1100;
+}
+
+.header-div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  box-shadow: 0 4px 6px rgba(0.2, 0.1, 0.3, 0.3);
+  border-radius: 25px;
+  padding-left: 20px;
+  padding-right: 5px;
+}
+
+.header-logo img {
+  height: 40px; 
+}
+
+.header-menu {
+  display: flex;
+  align-items: center;
+}
+
+.menu {
+  box-shadow: 0 4px 6px rgba(0.2, 0.1, 0.3, 0.3);
+  border-radius: 5px;
+  padding: 10px;
+}

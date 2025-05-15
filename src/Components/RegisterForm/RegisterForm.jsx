@@ -116,7 +116,7 @@ const RegisterForm = () => {
                 <PiPersonSimpleHikeThin
                   style={{
                     fontSize: "80px",
-                    color: "black",
+                    color: "white",
                     marginLeft: "10px",
                   }}
                 />
@@ -217,21 +217,25 @@ const RegisterForm = () => {
                 gap: "1rem",
               }}
             >
-              <button
+             <motion.button
                 className="Register-btn Back-Btn"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
                 type="button"
                 onClick={handleBack}
                 style={{ width: "30%" }}
               >
                 Back
-              </button>
-              <button
-                className="btn-primary Register-btn inline"
+              </motion.button>
+              <motion.button
+                className="btn-primary login-button"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => console.log("Login")}
                 type="submit"
-                style={{ width: "70%" }}
               >
                 Register
-              </button>
+              </motion.button>
             </motion.div>
           </motion.form>
         </motion.div>

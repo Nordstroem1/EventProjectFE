@@ -36,8 +36,7 @@ input:focus {
   margin-bottom: 4px;
 }
 .Register-Extra-Div{
-    border: 0.5px solid #8dc6f7;
-    background-color: #d6e4f0;
+    background-color: #514dc4;
     padding: 5px;
     border-radius: 8px;
     margin-bottom: 0.5rem;
@@ -46,10 +45,10 @@ input:focus {
     margin-top: 10px;
     padding: 3px;
     border-radius: 8px;
-    color: black;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
 }
-.Register-btn{
-    cursor: pointer;
-    font-size: 18px;
+h1{
+    color: white;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
 }

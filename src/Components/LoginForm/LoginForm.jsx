@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./LoginForm.css";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import "../../index.css";
 
 const LoginForm = () => {
   const [identifier, setIdentifier] = useState("");
@@ -97,7 +98,7 @@ const LoginForm = () => {
       <motion.div className="text-center mb-4 Login-Form-Header">
         <h1 className="text-center mb-4">Welcome</h1>
         <p className="text-center mb-4">
-          Create your account or log in to access events near you.
+          login to join the fun and create events with your friends!
         </p>
       </motion.div>
       <h2>Sign in</h2>
@@ -137,9 +138,15 @@ const LoginForm = () => {
             maxLength={200}
           />
         </div>
-        <button type="submit" className="btn btn-primary w-100">
+        <motion.button
+          className="btn-primary login-button"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => console.log("Login")}
+          type="submit"
+        >
           Login
-        </button>
+        </motion.button>
       </form>
       <div className="text-center mt-3">
         <button
