@@ -10,12 +10,15 @@
     max-width: 340px;
 }
 .Login-Form-Header{
-    background-color: #514dc4;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
-    color: #ffffff;
+    color: #514dc4;
     padding: 15px;
-    border-radius: 5px;
+    border-bottom: 1.5px solid #000000;
 }
 .login-button{
     width: 100%;
+}
+.welcome-tag{
+    color: black;
+    text-shadow: none;
+    font-size: 2rem;
 }

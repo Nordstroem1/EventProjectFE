@@ -10,7 +10,8 @@ const Footer = () => {
         </div>
       </div>
       <div className="footer-bottom">
-        <p>&copy; 2025 EventisApp. All rights reserved.</p>
+        <p>&copy; 2025 The Council V.3</p>
+        <p>All rights reserved.</p>
       </div>
     </footer>
   );

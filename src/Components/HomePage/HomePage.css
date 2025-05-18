@@ -1,0 +1,22 @@
+.filter-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  width: 80%;
+}
+.filter-button-div{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+.filter-button{
+  background-color: #ffffff;
+  border: 1.5px solid #514dc4;
+  color: #514dc4;
+  padding: 10px ;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 2px;
+}

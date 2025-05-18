@@ -96,9 +96,9 @@ const LoginForm = () => {
       variants={loginAnimation}
     >
       <motion.div className="text-center mb-4 Login-Form-Header">
-        <h1 className="text-center mb-4">Welcome</h1>
+        <h1 className="text-center mb-4 welcome-tag">Welcome</h1>
         <p className="text-center mb-4">
-          login to join the fun and create events with your friends!
+          Login to join the fun and create events with your friends!
         </p>
       </motion.div>
       <h2>Sign in</h2>

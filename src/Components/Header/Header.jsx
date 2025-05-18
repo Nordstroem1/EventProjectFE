@@ -10,26 +10,27 @@ const Header = () => {
     <>
       <header className="header">
         <div className="header-div">
-        <div className="header-logo">
-          <img src="/logo.png" alt="Eventis" />
-        </div>
-        <div className="header-menu">
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={toggleMenu}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '0.5rem'
-            }}
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24">
-              <path fill="currentColor" d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z" />
-            </svg>
-          </motion.button>
-        </div>
+          <div className="header-logo">
+            <img src="/logo.png" alt="The Council" />
+          </div>
+          <div className="header-menu">
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              animate={{ rotate: menuOpen ? 90 : 0 }}
+              onClick={toggleMenu}
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '0.5rem'
+              }}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z" />
+              </svg>
+            </motion.button>
+          </div>
         </div>
       </header>
 
