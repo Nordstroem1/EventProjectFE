@@ -19,9 +19,9 @@ function App() {
           <Route 
             path="/HomePage" 
             element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <HomePage />
-              </ProtectedRoute>
+             // </ProtectedRoute>
             }
           />
           <Route path="/" element={<LoginForm />} />

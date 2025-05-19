@@ -14,6 +14,7 @@ const HomePage = () => {
         <>
             <motion.div className="filter-container">
                 <motion.input
+                    className='search-input'
                     type="text"
                     placeholder="Search Event location..."
                     value={search}
@@ -39,7 +40,7 @@ const HomePage = () => {
                         visible: {
                             opacity: 1,
                             transition: {
-                                staggerChildren: 0.2,
+                                staggerChildren: 0.1,
                             },
                         },
                     }}
@@ -53,7 +54,7 @@ const HomePage = () => {
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                     >
-                        Button 1
+                        Attending 
                     </motion.button>
                     <motion.button
                         className="filter-button"
@@ -64,7 +65,7 @@ const HomePage = () => {
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                     >
-                        Button 2
+                        My Events
                     </motion.button>
                 </motion.div>
             )}

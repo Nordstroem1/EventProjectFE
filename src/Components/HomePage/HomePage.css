@@ -15,8 +15,11 @@
   background-color: #ffffff;
   border: 1.5px solid #514dc4;
   color: #514dc4;
-  padding: 10px ;
+  padding: 5px ;
   border-radius: 4px;
   cursor: pointer;
   margin: 2px;
+}
+.search-input{
+  margin-top: 40px;
 }

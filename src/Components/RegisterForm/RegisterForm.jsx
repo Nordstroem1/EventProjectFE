@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Select from "react-select";
 import countryList from "react-select-country-list";
 import { AnimatePresence, motion } from "framer-motion";
 import "./RegisterForm.css";
@@ -53,13 +52,6 @@ const RegisterForm = () => {
 
   const [error, setError] = useState("");
   const options = countryList().getData();
-
-  const handleCountryChange = (selectedOption) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      country: selectedOption ? selectedOption.value : "",
-    }));
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
