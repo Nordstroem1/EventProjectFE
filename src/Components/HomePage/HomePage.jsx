@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import './HomePage.css';
 import "../../index.css";
+import EventCard from '../EventCard/EventCasd.jsx';
 
 const HomePage = () => {
     const [showFilters, setShowFilters] = useState(false);
@@ -9,6 +10,22 @@ const HomePage = () => {
 
     const toggleFilters = () => setShowFilters(!showFilters);
     const handleSearchChange = (e) => setSearch(e.target.value);
+
+    const mockEvents = [
+    {
+        eventId: "1",
+        eventName: "Mock Tech Meetup",
+        description: "A fun and insightful meetup for tech enthusiasts!",
+        createdAt: "2025-05-01T10:00:00Z",
+        startDate: "2025-06-01T18:00",
+        endDate: "2025-06-01T21:00",
+        imageUrl: "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/1015f/MainBefore.jpg",
+        isClosedEvent: false,
+        createdBy: "Jane Developer",
+        location: "Stockholm, Sweden",
+        likeList: [{ id: 1, name: "Alice" }, { id: 2, name: "Bob" }]
+    }
+];
 
     return (
         <>
@@ -69,6 +86,11 @@ const HomePage = () => {
                     </motion.button>
                 </motion.div>
             )}
+             <div className="event-list">
+            {mockEvents.map(event => (
+                <EventCard key={event.eventId} {...event} />
+            ))}
+        </div>
         </>
     );
 };
