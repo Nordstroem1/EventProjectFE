@@ -3,7 +3,7 @@
     background-color: #fff;
     padding: 1rem;
     margin-bottom: 1.5rem;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2), 0 4px 10px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
 }
@@ -15,7 +15,42 @@
     margin-bottom: 1rem;
 }
 
-.closed-tag {
-    color: #e74c3c;
-    font-weight: bold;
+.event-date {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    height: auto;
+}
+.icons {
+    display: flex;
+    height: 20px;
+}
+
+.clock-Logo{
+    color: rgb(15, 52, 176);
+}
+.event-location{
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    height: auto;
+}
+
+.location-Logo{
+    color: rgb(3, 90, 3);
+}
+.owner-Logo{
+    color: rgb(18, 3, 71);
+    gap: 0.5rem;
+}
+.event-createdBy{
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    height: auto;
+}
+.like-dislike{
+    display: flex;
+    gap: 5rem;
+    justify-content: center;
 }
