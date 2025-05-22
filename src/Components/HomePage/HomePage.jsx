@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import './HomePage.css';
 import "../../index.css";
+import './HomePage.css';
 import EventCard from '../EventCard/EventCasd.jsx';
+import EventForm from '../CreateEventForm/EventForm.jsx';
 
 const HomePage = () => {
     const [showFilters, setShowFilters] = useState(false);
@@ -10,6 +11,7 @@ const HomePage = () => {
 
     const toggleFilters = () => setShowFilters(!showFilters);
     const handleSearchChange = (e) => setSearch(e.target.value);
+    const [showEventForm, setShowEventForm] = useState(false);
 
     const mockEvents = [
     {
@@ -80,6 +82,7 @@ const HomePage = () => {
                 <motion.button
                     className="Create-Event-Button"
                     whileTap={{ scale: 0.9 }}
+                    onClick={() => setShowEventForm(true)}
                 >
                     Create Event
                 </motion.button>
@@ -158,6 +161,42 @@ const HomePage = () => {
                     }
                 })}
             </div>
+            {showEventForm && (
+                <motion.div 
+                    className="modal-backdrop" 
+                    initial={{ opacity: 0 }} 
+                    animate={{ opacity: 1 }} 
+                    exit={{ opacity: 0 }}
+                >
+                    <motion.div 
+                        className="modal-content"
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.8, opacity: 0 }}
+                        style={{
+                            background: '#fff',
+                            padding: '20px',
+                            borderRadius: '8px',
+                            position: 'relative'
+                        }}
+                    >
+                        <EventForm />
+                        <motion.button 
+                            onClick={() => setShowEventForm(false)}
+                            className="close-modal"
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            style={{
+                                position: 'absolute',
+                                top: '10px',
+                                right: '10px'
+                            }}
+                        >
+                            X
+                        </motion.button>
+                    </motion.div>
+                </motion.div>
+            )}
         </>
     );
 };

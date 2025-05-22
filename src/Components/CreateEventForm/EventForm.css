@@ -1,0 +1,34 @@
+.input-field{
+    padding: 5px;
+    border-radius: 5px;
+    width: 100%;
+    margin-bottom: 10px;
+    border: 1.5px solid #514dc4;
+}
+.event-form-container{
+    font-size: 1.1rem;
+    padding: 20px;
+    margin: 10px;
+}
+.form-group {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    align-items: center;
+    align-self: center;
+}
+.switch-group{
+    margin-bottom: 10px;
+}
+.submit-button{
+    background-color: #075d14;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 1.5px solid #b3e9bb;
+    color: white;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+}

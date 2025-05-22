@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
-const CityAutocomplete = ({ value, onChange }) => {
+const CityAutocomplete = ({ value, onChange, className }) => {
   const [query, setQuery] = useState(value || "");
   const [suggestions, setSuggestions] = useState([]);
 
@@ -35,6 +35,7 @@ const CityAutocomplete = ({ value, onChange }) => {
   return (
     <div className="form-group form-group-column"> 
       <input
+        className={className} 
         type="text"
         value={query}
         placeholder="Enter your city..."

@@ -45,5 +45,22 @@
   border: none;
   cursor: pointer;
   border: 1.5px solid #b3e9bb;
-  color: #b3e9bb;
+  color: white;
+}
+.modal-backdrop{
+  position: 'fixed';
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  background-color: rgba(0,0,0,0.3);
+  padding: 20px;
+}
+input{
+  width: 100%;
 }
