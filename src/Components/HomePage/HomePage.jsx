@@ -24,6 +24,44 @@ const HomePage = () => {
         createdBy: "Jane Developer",
         location: "Stockholm, Sweden",
         likeList: [{ id: 1, name: "Alice" }, { id: 2, name: "Bob" }]
+    },
+     {
+        eventId: "2",
+        eventName: "Vadning Conference",
+        description: "A fun and insightful meetup for tech enthusiasts!",
+        createdAt: "2025-07-01T10:00:00Z",
+        startDate: "2025-10-01T18:00",
+        endDate: "2025-10-02T19:00",
+        imageUrl: "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/1015f/MainBefore.jpg",
+        isClosedEvent: false,
+        createdBy: "John Doe",
+        location: "Gothenburg, Sweden",
+        likeList: [{ id: 1, name: "Alice" }, { id: 2, name: "Bob" }]
+    },
+     {
+        eventId: "3",
+        eventName: "Mock Tech Meetup",
+        description: "A fun and insightful meetup for tech enthusiasts!",
+        createdAt: "2025-05-01T10:00:00Z",
+        startDate: "2025-06-01T18:00",
+        endDate: "2025-06-01T21:00",
+        imageUrl: "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/1015f/MainBefore.jpg",
+        isClosedEvent: false,
+        createdBy: "Jane Developer",
+        location: "Stockholm, Sweden",
+        likeList: [{ id: 1, name: "Alice" }, { id: 2, name: "Bob" }]
+    }, {
+        eventId: "4",
+        eventName: "Mock Tech Meetup",
+        description: "A fun and insightful meetup for tech enthusiasts!",
+        createdAt: "2025-05-01T10:00:00Z",
+        startDate: "2025-06-01T18:00",
+        endDate: "2025-06-01T21:00",
+        imageUrl: "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/1015f/MainBefore.jpg",
+        isClosedEvent: false,
+        createdBy: "Jane Developer",
+        location: "Stockholm, Sweden",
+        likeList: [{ id: 1, name: "Alice" }, { id: 2, name: "Bob" }]
     }
 ];
 
@@ -38,7 +76,13 @@ const HomePage = () => {
                     onChange={handleSearchChange}
                 />
             </motion.div>
-            <motion.div>
+            <motion.div className="buttons-Container">
+                <motion.button
+                    className="Create-Event-Button"
+                    whileTap={{ scale: 0.9 }}
+                >
+                    Create Event
+                </motion.button>
                 <motion.button
                     className="filter-button"
                     onClick={toggleFilters}
@@ -87,10 +131,33 @@ const HomePage = () => {
                 </motion.div>
             )}
              <div className="event-list">
-            {mockEvents.map(event => (
-                <EventCard key={event.eventId} {...event} />
-            ))}
-        </div>
+                {mockEvents.map((event, index) => {
+                    if (index < 2) {
+                        return (
+                            <motion.div
+                                key={event.eventId}
+                                initial={{ opacity: 0, y: 50 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, delay: index * 0.2 }}
+                            >
+                                <EventCard {...event} />
+                            </motion.div>
+                        );
+                    } else {
+                        return (
+                            <motion.div
+                                key={event.eventId}
+                                initial={{ opacity: 0, y: 50 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true, amount: 0.3 }}
+                                transition={{ duration: 0.5 }}
+                            >
+                                <EventCard {...event} />
+                            </motion.div>
+                        );
+                    }
+                })}
+            </div>
         </>
     );
 };

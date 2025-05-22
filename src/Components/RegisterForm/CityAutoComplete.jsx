@@ -26,9 +26,9 @@ const CityAutocomplete = ({ value, onChange }) => {
     return () => clearTimeout(timer);
   }, [query]);
 
-  const handleSelect = (suggestion) => {
-    setQuery(suggestion.display_name);
-    onChange(suggestion.display_name);
+  const handleSelect = (suggestion, display) => {
+    setQuery(display);
+    onChange(display);
     setSuggestions([]);
   };
 
@@ -55,18 +55,27 @@ const CityAutocomplete = ({ value, onChange }) => {
               background: "#fff",
               padding: "0.5rem",
               margin: 0,
-              border: "1px solid #ccc",
+              border: "1px solid #514dc4",
+              borderRadius: "7px",
             }}
           >
-            {suggestions.map((suggestion) => (
-              <li
-                key={suggestion.place_id}
-                onClick={() => handleSelect(suggestion)}
-                style={{ padding: "0.25rem 0", cursor: "pointer"}}
-              >
-                {suggestion.display_name}
-              </li>
-            ))}
+            {suggestions.map((suggestion) => {
+              const parts = suggestion.display_name.split(",");
+              const city = parts[0] ? parts[0].trim() : "";
+              const country = parts[parts.length - 1]
+                ? parts[parts.length - 1].trim()
+                : "";
+              const display = `${city}, ${country}`;
+              return (
+                <li
+                  key={suggestion.place_id}
+                  onClick={() => handleSelect(suggestion, display)}
+                  style={{ padding: "0.25rem 0", cursor: "pointer", listStyle: "none"}}
+                >
+                  {display}
+                </li>
+              );
+            })}
           </motion.ul>
         )}
       </AnimatePresence>

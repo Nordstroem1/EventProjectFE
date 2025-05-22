@@ -5,7 +5,20 @@ import { FaClock } from "react-icons/fa6";
 import { FaLocationDot } from "react-icons/fa6";
 import { RiAdminFill } from "react-icons/ri";
 import { BiSolidLike } from "react-icons/bi";
-import { BiSolidDislike } from "react-icons/bi";
+
+const containerVariants = {
+    hidden: {},
+    visible: {
+        transition: {
+            staggerChildren: 0.1,
+        },
+    },
+};
+
+const childVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+};
 
 const EventCard = ({
   eventId,
@@ -21,20 +34,33 @@ const EventCard = ({
   likeList,
 }) => {
   return (
-    <motion.div className="event-card" whileHover={{ scale: 1.02 }}>
-      <h2 className="eventName">{eventName}</h2>
-      <motion.div className="event-createdBy">
+       <motion.div
+      className="event-card"
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.3 }}
+    >
+      <motion.h2 className="eventName" variants={childVariants}>
+        {eventName}
+      </motion.h2>
+      <motion.div className="event-createdBy" variants={childVariants}>
         <RiAdminFill className="owner-Logo" style={{ marginTop: "3px" }} />
         <p>{createdBy}</p>
       </motion.div>
       {imageUrl && (
-        <img src={imageUrl} alt={eventName} className="event-image" />
+        <motion.img
+          src={imageUrl}
+          alt={eventName}
+          className="event-image"
+          variants={childVariants}
+        />
       )}
-      <div className="event-date">
+      <motion.div className="event-date" variants={childVariants}>
         <FaClock className="icons clock-Logo" style={{ marginTop: "3px" }} />
         <p>
           {new Date(startDate)
-            .toLocaleString("en-US", {
+            .toLocaleString("sv-SE", {
               month: "long",
               day: "numeric",
               hour: "2-digit",
@@ -46,7 +72,7 @@ const EventCard = ({
         <p>-</p>
         <p>
           {new Date(endDate)
-            .toLocaleString("en-US", {
+            .toLocaleString("sv-SE", {
               month: "long",
               day: "numeric",
               hour: "2-digit",
@@ -55,20 +81,18 @@ const EventCard = ({
             })
             .replace(",", " clock:")}
         </p>
-      </div>
-      <motion.div className="event-location">
+      </motion.div>
+      <motion.div className="event-location" variants={childVariants}>
         <FaLocationDot
           className="icons location-Logo"
           style={{ marginTop: "3px" }}
         />
         <motion.p>{location}</motion.p>
       </motion.div>
-      <p>{description}</p>
-
-      <motion.div className="like-dislike">
+      <motion.p variants={childVariants}>{description}</motion.p>
+      <motion.div className="like-dislike" variants={childVariants}>
         <motion.button
-          whileTap={{ scale: [1, 1.4] }}
-          transition={{ type: "spring", stiffness: 400 }}
+          whileTap={{ scale: 1.2 }}
           style={{
             background: "none",
             border: "none",
@@ -78,25 +102,15 @@ const EventCard = ({
           onClick={() => console.log("Like button clicked")}
         >
           <BiSolidLike className="icon like-icon" />
-            {likeList?.length || 0}
-        </motion.button>
-        <motion.button
-          whileTap={{ scale: [1, 1.4] }}
-          transition={{ type: "spring", stiffness: 400 }}
-          style={{
-            background: "none",
-            border: "none",
-            padding: 0,
-            cursor: "pointer",
-          }}
-          onClick={() => console.log("Like button clicked")}
-        >
-          <BiSolidDislike className="icon dislike-icon" />
+          {likeList?.length || 0}
         </motion.button>
       </motion.div>
-      {isClosedEvent && <p className="closed-tag">Closed Event</p>}
+      {isClosedEvent && (
+        <motion.p className="closed-tag" variants={childVariants}>
+          Closed Event
+        </motion.p>
+      )}
     </motion.div>
   );
 };
-
 export default EventCard;
