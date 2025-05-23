@@ -2,10 +2,11 @@ import { useState } from "react";
 import "../../index.css";
 import { motion } from "framer-motion";
 import "./EventForm.css";
-import CityAutocomplete from "../RegisterForm/CityAutoComplete.jsx"; 
+import CityAutocomplete from "../RegisterForm/CityAutoComplete.jsx";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Switch from "react-switch";
+import { CiImageOn } from "react-icons/ci";
 
 const EventForm = () => {
   const [eventName, setEventName] = useState("");
@@ -14,8 +15,18 @@ const EventForm = () => {
   const [endDate, setEndDate] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
   const [description, setDescription] = useState("");
+  const [bgFile, setBgFile] = useState(null);
+  const [error, setError] = useState("");
 
   const isEndInvalid = startDate && endDate && endDate < startDate;
+  const [bgPreview, setBgPreview] = useState(null);
+  const handleBgChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setBgFile(file);
+      setBgPreview(URL.createObjectURL(file));
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -61,13 +72,38 @@ const EventForm = () => {
         </div>
 
         <div className="form-group">
+          <input
+            type="file"
+            id="bg-input"
+            accept="image/*"
+            onChange={handleBgChange}
+            style={{ display: "none" }}
+          />
+          <motion.button
+            className="img-upload-button"
+            type="button"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => document.getElementById("bg-input").click()}
+          >
+            <CiImageOn size={24} style={{ margin: "10px" }} />
+            Choose Image
+          </motion.button>
+        </div>
+        {bgPreview && (
+          <div className="form-group">
+            <p className="preview-text">{bgPreview}</p>
+          </div>
+        )}
+
+        <div className="form-group">
           <div className="form-group">
             <label>Location</label>
-            <CityAutocomplete 
-                className="input-field"
-                value={location} 
-                onChange={setLocation} 
-                />
+            <CityAutocomplete
+              className="input-field"
+              value={location}
+              onChange={setLocation}
+            />
           </div>
         </div>
 
@@ -113,15 +149,13 @@ const EventForm = () => {
           />
         </div>
 
-        <div className="form-group">
-          <textarea
-            className="input-field"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            rows="4"
-            placeholder="Event description..."
-          />
-        </div>
+        <textarea
+          className="description-field input-field"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          rows="4"
+          placeholder="Event description..."
+        />
 
         <motion.button
           type="submit"

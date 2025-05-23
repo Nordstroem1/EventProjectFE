@@ -1,7 +1,6 @@
 .input-field{
     padding: 5px;
     border-radius: 5px;
-    width: 100%;
     margin-bottom: 10px;
     border: 1.5px solid #514dc4;
 }
@@ -31,4 +30,22 @@
     align-self: center;
     justify-self: center;
     width: 100%;
+}
+.description-field{
+    width: 100%;
+    align-self: center;
+    justify-self: center;
+}
+.img-upload-button{
+    cursor: pointer;
+    border: 1.5px solid #514dc4;
+    background-color: #fff;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+.preview-text {
+  font-size: 0.85rem;
+  color: #555;
+  word-break: break-all;
+  margin-top: 4px;
 }
