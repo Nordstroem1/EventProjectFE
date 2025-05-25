@@ -60,7 +60,7 @@ const EventForm = () => {
     >
       <form onSubmit={handleSubmit} className="event-form">
         <div className="form-group">
-          <h2>Event Title</h2>
+          <h2 style={{ fontWeight: 'bold', fontSize: '35px' }}>Create Event</h2>
           <input
             className="input-field"
             type="text"
@@ -86,7 +86,7 @@ const EventForm = () => {
             whileTap={{ scale: 0.95 }}
             onClick={() => document.getElementById("bg-input").click()}
           >
-            <CiImageOn size={24} style={{ margin: "10px" }} />
+            <CiImageOn size={24}/>
             Choose Image
           </motion.button>
         </div>
@@ -97,18 +97,14 @@ const EventForm = () => {
         )}
 
         <div className="form-group">
-          <div className="form-group">
-            <label>Location</label>
             <CityAutocomplete
               className="input-field"
               value={location}
               onChange={setLocation}
             />
-          </div>
         </div>
 
         <div className="form-group">
-          <label>Starts</label>
           <DatePicker
             className="input-field"
             selected={startDate}
@@ -121,7 +117,6 @@ const EventForm = () => {
         </div>
 
         <div className="form-group">
-          <label>Ends</label>
           <DatePicker
             className="input-field"
             selected={endDate}
