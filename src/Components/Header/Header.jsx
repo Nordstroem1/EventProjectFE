@@ -5,6 +5,7 @@ import { MdLogin } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { LuUserRoundPlus } from "react-icons/lu";
 
+
 const menuVariants = {
   hidden: { opacity: 0, y: -20, scale: 0.95 },
   visible: {
