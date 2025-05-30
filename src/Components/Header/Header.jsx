@@ -6,6 +6,7 @@ import { CgProfile } from "react-icons/cg";
 import { LuUserRoundPlus } from "react-icons/lu";
 import { useNavigate } from 'react-router-dom';
 
+
 const menuVariants = {
   hidden: { opacity: 0, y: -20, scale: 0.95 },
   visible: {
