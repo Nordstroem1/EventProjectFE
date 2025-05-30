@@ -75,3 +75,36 @@ input:focus {
 .Back-Btn{
   border-radius: 10px;
 }
+.profile-pic-input {
+  display: none;
+}
+.profile-pic-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+}
+.image-icon{
+  height: 22px;
+  width: 22px;
+}
+.img-upload-button{
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  height: 2.5rem;
+}
+.img-upload-content {
+  display: flex;
+  align-items: center; /* Align icon and text vertically */
+  gap: 8px; /* Add space between the icon and text */
+}
+
+.image-icon {
+  font-size: 1.2rem; /* Adjust icon size */
+  color: #514dc4; /* Optional: Set icon color */
+}

@@ -59,7 +59,7 @@ const EventForm = ({ onClose }) => {
       animate="visible"
       variants={containerVariants}
     >
-      <motion.button 
+      <motion.button
         onClick={onClose}
         className="close-Form-button"
         whileHover={{ scale: 1.1 }}
@@ -67,10 +67,10 @@ const EventForm = ({ onClose }) => {
       >
         <IoClose size={24} />
       </motion.button>
-      
+
       <form onSubmit={handleSubmit} className="event-form">
         <div className="form-group">
-          <h2 style={{ fontWeight: 'bold', fontSize: '35px' }}>Create Event</h2>
+          <h2 style={{ fontWeight: "bold", fontSize: "35px" }}>Create Event</h2>
           <input
             className="input-field"
             type="text"
@@ -86,7 +86,17 @@ const EventForm = ({ onClose }) => {
             type="file"
             id="bg-input"
             accept="image/*"
-            onChange={handleBgChange}
+            onChange={(e) => {
+              const file = e.target.files[0];
+              if (!file) {
+                setError("No file selected.");
+              } else if (!file.type.startsWith("image/")) {
+                setError("Please select a valid image file.");
+              } else {
+                setError(""); // Clear error
+                console.log("Selected file:", file);
+              }
+            }}
             style={{ display: "none" }}
           />
           <motion.button
@@ -96,7 +106,7 @@ const EventForm = ({ onClose }) => {
             whileTap={{ scale: 0.95 }}
             onClick={() => document.getElementById("bg-input").click()}
           >
-            <CiImageOn size={24}/>
+            <CiImageOn size={24} />
             Choose Image
           </motion.button>
         </div>
@@ -107,11 +117,11 @@ const EventForm = ({ onClose }) => {
         )}
 
         <div className="form-group">
-            <CityAutocomplete
-              className="input-field"
-              value={location}
-              onChange={setLocation}
-            />
+          <CityAutocomplete
+            className="input-field"
+            value={location}
+            onChange={setLocation}
+          />
         </div>
 
         <div className="form-group">

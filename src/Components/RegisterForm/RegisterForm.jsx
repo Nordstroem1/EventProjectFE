@@ -6,6 +6,8 @@ import "./RegisterForm.css";
 import "../../index.css";
 import { PiPersonSimpleHikeThin } from "react-icons/pi";
 import CityAutocomplete from "./CityAutoComplete";
+import { FaImage } from "react-icons/fa";
+import axios from "axios";
 
 const containerVariants = {
   hidden: { opacity: 0, y: -100 },
@@ -37,6 +39,10 @@ const RegisterForm = () => {
     city: "",
   });
 
+  const [profilePic, setProfilePic] = useState(null); 
+  const [error, setError] = useState("");
+  const options = countryList().getData();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -45,10 +51,19 @@ const RegisterForm = () => {
     }));
   };
 
-  const [error, setError] = useState("");
-  const options = countryList().getData();
+  const handleProfilePicChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) {
+      setError("No file selected.");
+    } else if (!file.type.startsWith("image/")) {
+      setError("Please select a valid image file.");
+    } else {
+      setError("");
+      setProfilePic(file); 
+    }
+  };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
@@ -56,13 +71,39 @@ const RegisterForm = () => {
       !formData.email ||
       !formData.username ||
       !formData.password ||
-      !formData.city
+      !formData.city 
     ) {
       setError("Please fill in all required fields.");
       return;
     }
 
-    console.log("Form Data:", formData);
+     try {
+      // Create FormData object to handle file upload
+      const formDataToSend = new FormData();
+      formDataToSend.append("email", formData.email);
+      formDataToSend.append("username", formData.username);
+      formDataToSend.append("password", formData.password);
+      formDataToSend.append("city", formData.city);
+      if (profilePic) {
+        formDataToSend.append("profilePic", profilePic);
+      }
+
+      const response = await axios.post('https://localhost:58296/api/User/CreateUser', formDataToSend, {
+        headers: {
+          "Content-Type": "multipart/form-data", 
+        },
+      });
+
+      console.log("Registration successful:", response.data);
+
+      // Show success message or redirect
+      alert("Registration successful!");
+    } catch (err) {
+      console.error(err);
+      setError(
+        err.response?.data?.message || "An error occurred. Please try again."
+      );
+    }
   };
 
   const handleBack = () => {
@@ -156,8 +197,7 @@ const RegisterForm = () => {
               />
             </motion.div>
             <motion.div variants={childVariants}>
-              <div className="form-group form-group-column">
-              </div>
+              <div className="form-group form-group-column"></div>
               <CityAutocomplete
                 className="input-city"
                 value={formData.city}
@@ -171,9 +211,43 @@ const RegisterForm = () => {
             </motion.div>
             <motion.div
               variants={childVariants}
-              className="btn-container"
+              className="form-group form-group-column"
             >
-             <motion.button
+              <div className="profile-pic-wrapper">
+                <input
+                  type="file"
+                  id="profile-pic"
+                  name="profilePic"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (!file) {
+                      setError("No file selected.");
+                    } else if (!file.type.startsWith("image/")) {
+                      setError("Please select a valid image file.");
+                    } else {
+                      setError("");
+                      console.log("Selected file:", file);
+                    }
+                  }}
+                  className="profile-pic-input"
+                />
+                <motion.button
+                  className="img-upload-button"
+                  type="button"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => document.getElementById("profile-pic").click()}
+                >
+                  <span className="img-upload-content">
+                    <FaImage className="image-icon" />
+                    Profile Pic
+                  </span>
+                </motion.button>
+              </div>
+            </motion.div>
+            <motion.div variants={childVariants} className="btn-container">
+              <motion.button
                 className="Register-btn Back-Btn"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}

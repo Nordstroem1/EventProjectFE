@@ -38,54 +38,29 @@ const LoginForm = () => {
       ...(isEmail ? { email: identifier } : { username: identifier }),
     };
 
-    // mock response data
-    setTimeout(() => {
-      const mockResponse = {
-        data: {
-          token: "mock-jwt-token",
-          userId: 123,
-          role: "user",
-          expires: "2025-05-12T00:00:00Z",
-        },
-      };
-      console.log(mockResponse.data);
+    try {
+      const response = await axios.post(
+        "https://localhost:58296/api/User/Login",
+        payload
+      );
+      console.log(response.data);
 
-      if (mockResponse.data && mockResponse.data.token) {
-        localStorage.setItem("jwtToken", mockResponse.data.token);
+      if (response.data && response.data.token) {
+        localStorage.setItem("jwtToken", response.data.token);
         setAnimateOut(true);
         setTimeout(() => {
           navigate("/HomePage");
         }, 700);
       }
-    }, 1000);
-
-    //   try {
-
-    //     const response = await axios.post('https://example.com/api/login', payload)
-    //     console.log(response.data)
-
-    //     if (response.data && response.data.token) {
-    //       localStorage.setItem('jwtToken', response.data.token)
-    //       setAnimateOut(true)
-    //       setTimeout(() => {
-    //         navigate('/HomePage')
-    //       }, 700)
-    //     }
-
-    //   } catch (err)
-    //   {
-    //     if (err.response)
-    //     {
-    //       setError(err.response.data.message)
-    //     } else if (err.request)
-    //     {
-    //       setError('Network error. Please try again later.')
-    //     } else
-    //     {
-    //       setError('An unexpected error occurred.')
-    //     }
-    //   }
-    // }
+    } catch (err) {
+      if (err.response) {
+        setError(err.response.data.message || "Invalid credentials.");
+      } else if (err.request) {
+        setError("Network error. Please try again later.");
+      } else {
+        setError("An unexpected error occurred.");
+      }
+    }
   };
 
   return (
@@ -96,7 +71,7 @@ const LoginForm = () => {
         animate={animateOut ? "exit" : "initial"}
         variants={loginAnimation}
       >
-        <h2>Sign in</h2>
+        <h1>Sign in</h1>
         {error && (
           <label className="custom-error-label text-danger" htmlFor="error">
             {error}
@@ -137,7 +112,6 @@ const LoginForm = () => {
             className="btn-primary login-button"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            onClick={() => console.log("Login")}
             type="submit"
           >
             Login
@@ -161,4 +135,5 @@ const LoginForm = () => {
     </motion.div>
   );
 };
+
 export default LoginForm;

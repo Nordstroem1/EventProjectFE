@@ -114,7 +114,10 @@ const Header = () => {
       <motion.button
         variants={itemVariants}
         whileTap={{ scale: 1.1 }}
-        onClick={() => console.log('User Profile')}
+        onClick={() =>{
+          navigate('/ProfilePage')
+          setMenuOpen(false);
+        }}
         className='header-btn'
       >
         <CgProfile className='icon' />
