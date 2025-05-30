@@ -4,6 +4,7 @@ import "./Header.css";
 import { MdLogin } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { LuUserRoundPlus } from "react-icons/lu";
+import { useNavigate } from 'react-router-dom';
 
 const menuVariants = {
   hidden: { opacity: 0, y: -20, scale: 0.95 },
@@ -28,12 +29,15 @@ const itemVariants = {
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const toggleMenu = () => setMenuOpen(prev => !prev);
+  const navigate = useNavigate();
 
   return (
     <>
       <header className="header">
         <div className="header-div">
-          <div className="header-logo">
+          <div className="header-logo"
+           onClick={() => navigate('/homepage')} 
+           style={{ cursor: 'pointer' }}>
             <img src="/src/Images/The_Council_v.3.png" />
           </div>
           <div className="header-menu">
@@ -80,29 +84,26 @@ const Header = () => {
       }}
     >
       <motion.button
+        className='header-btn'
         variants={itemVariants}
         whileTap={{ scale: 1.1 }}
-        onClick={() => console.log('Sign in')}
-        style={{
-          padding: '1rem',
-          background: 'none',
-          border: 'none',
-          cursor: 'pointer',
+        onClick={() => {
+          navigate('/login');
+          setMenuOpen(false);
         }}
+        
       >
         <MdLogin className='icon' />
         Sign in
       </motion.button>
 
       <motion.button
+        className='header-btn'
         variants={itemVariants}
         whileTap={{ scale: 1.1 }}
-        onClick={() => console.log('Register')}
-        style={{
-          padding: '1rem',
-          background: 'none',
-          border: 'none',
-          cursor: 'pointer',
+        onClick={() =>{
+          navigate('/register')
+          setMenuOpen(false);
         }}
       >
         <LuUserRoundPlus className='icon' />
@@ -113,12 +114,7 @@ const Header = () => {
         variants={itemVariants}
         whileTap={{ scale: 1.1 }}
         onClick={() => console.log('User Profile')}
-        style={{
-          padding: '1rem',
-          background: 'none',
-          border: 'none',
-          cursor: 'pointer',
-        }}
+        className='header-btn'
       >
         <CgProfile className='icon' />
         Profile

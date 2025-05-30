@@ -7,8 +7,9 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Switch from "react-switch";
 import { CiImageOn } from "react-icons/ci";
+import { IoClose } from "react-icons/io5";
 
-const EventForm = () => {
+const EventForm = ({ onClose }) => {
   const [eventName, setEventName] = useState("");
   const [location, setLocation] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -58,6 +59,15 @@ const EventForm = () => {
       animate="visible"
       variants={containerVariants}
     >
+      <motion.button 
+        onClick={onClose}
+        className="close-Form-button"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+      >
+        <IoClose size={24} />
+      </motion.button>
+      
       <form onSubmit={handleSubmit} className="event-form">
         <div className="form-group">
           <h2 style={{ fontWeight: 'bold', fontSize: '35px' }}>Create Event</h2>
@@ -130,8 +140,8 @@ const EventForm = () => {
           {isEndInvalid && <p className="error">End must be after start.</p>}
         </div>
 
-        <div className="form-group switch-group">
-          <span className="switch-label">Public / Private</span>
+        <div className="switch-group">
+          <span className="switch-label">Public or Private</span>
           <Switch
             onChange={(checked) => setIsPrivate(checked)}
             checked={isPrivate}

@@ -89,79 +89,75 @@ const LoginForm = () => {
   };
 
   return (
-    <motion.div
-      className="container login-form"
-      initial="initial"
-      animate={animateOut ? "exit" : "initial"}
-      variants={loginAnimation}
-    >
-      <motion.div className="text-center mb-4 Login-Form-Header">
-        <h1 className="text-center mb-4 welcome-tag">Welcome</h1>
-        <p className="text-center mb-4">
-          Login to join the fun and create events with your friends!
-        </p>
+    <motion.div className="login-container">
+      <motion.div
+        className="login-form"
+        initial="initial"
+        animate={animateOut ? "exit" : "initial"}
+        variants={loginAnimation}
+      >
+        <h2>Sign in</h2>
+        {error && (
+          <label className="custom-error-label text-danger" htmlFor="error">
+            {error}
+          </label>
+        )}
+        <form onSubmit={handleSubmit} noValidate>
+          <div className="mb-3">
+            <label htmlFor="identifier" className="form-label">
+              Username or Email
+            </label>
+            <input
+              type="text"
+              id="identifier"
+              className="form-control"
+              placeholder="Username or email"
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
+              required
+              maxLength={150}
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="password" className="form-label">
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              className="form-control"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              maxLength={200}
+            />
+          </div>
+          <motion.button
+            className="btn-primary login-button"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => console.log("Login")}
+            type="submit"
+          >
+            Login
+          </motion.button>
+        </form>
+        <div className="text-center mt-3">
+          <button
+            type="button"
+            className="btn btn-link"
+            onClick={() => {
+              setAnimateOut(true);
+              setTimeout(() => {
+                navigate("/Register");
+              }, 200);
+            }}
+          >
+            Create Account
+          </button>
+        </div>
       </motion.div>
-      <h2>Sign in</h2>
-      {error && (
-        <label className="custom-error-label text-danger" htmlFor="error">
-          {error}
-        </label>
-      )}
-      <form onSubmit={handleSubmit} noValidate>
-        <div className="mb-3">
-          <label htmlFor="identifier" className="form-label">
-            Username or Email
-          </label>
-          <input
-            type="text"
-            id="identifier"
-            className="form-control"
-            placeholder="Username or email"
-            value={identifier}
-            onChange={(e) => setIdentifier(e.target.value)}
-            required
-            maxLength={150}
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="password" className="form-label">
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            className="form-control"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            maxLength={200}
-          />
-        </div>
-        <motion.button
-          className="btn-primary login-button"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={() => console.log("Login")}
-          type="submit"
-        >
-          Login
-        </motion.button>
-      </form>
-      <div className="text-center mt-3">
-        <button
-          type="button"
-          className="btn btn-link"
-          onClick={() => {
-            setAnimateOut(true);
-            setTimeout(() => {
-              navigate("/Register");
-            }, 200);
-          }}
-        >
-          Create Account
-        </button>
-      </div>
     </motion.div>
   );
 };

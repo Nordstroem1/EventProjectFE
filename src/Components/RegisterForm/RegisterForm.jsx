@@ -32,14 +32,9 @@ const RegisterForm = () => {
   const [isExiting, setIsExiting] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
-    phone: "",
     username: "",
     password: "",
-    passwordConfirm: "",
-    firstName: "",
-    lastName: "",
     city: "",
-    country: "",
   });
 
   const handleChange = (e) => {
@@ -61,15 +56,9 @@ const RegisterForm = () => {
       !formData.email ||
       !formData.username ||
       !formData.password ||
-      !formData.passwordConfirm ||
       !formData.city
     ) {
       setError("Please fill in all required fields.");
-      return;
-    }
-
-    if (formData.password !== formData.passwordConfirm) {
-      setError("Passwords do not match.");
       return;
     }
 
@@ -97,7 +86,6 @@ const RegisterForm = () => {
               initial={{ opacity: 0, y: -50 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <h1 style={{ marginTop: "15px" }}>Create Your Account</h1>
               <div
                 style={{
                   display: "flex",
@@ -127,14 +115,13 @@ const RegisterForm = () => {
               className="form-group form-group-column"
               style={{ marginTop: "1rem" }}
             >
-              <label>Username</label>
               <input
                 type="text"
                 name="username"
                 value={formData.username}
                 onChange={handleChange}
                 required
-                placeholder="John Doe"
+                placeholder="Username..."
                 maxLength={50}
                 autoComplete="username"
               />
@@ -143,7 +130,6 @@ const RegisterForm = () => {
               variants={childVariants}
               className="form-group form-group-column"
             >
-              <label>Email</label>
               <input
                 type="email"
                 name="email"
@@ -151,7 +137,7 @@ const RegisterForm = () => {
                 onChange={handleChange}
                 required
                 maxLength={150}
-                placeholder="your.email@example.com"
+                placeholder="Email..."
                 autoComplete="email"
               />
             </motion.div>
@@ -159,7 +145,6 @@ const RegisterForm = () => {
               variants={childVariants}
               className="form-group form-group-column"
             >
-              <label>Password</label>
               <input
                 type="password"
                 name="password"
@@ -170,26 +155,11 @@ const RegisterForm = () => {
                 autoComplete="new-password"
               />
             </motion.div>
-            <motion.div
-              variants={childVariants}
-              className="form-group form-group-column"
-            >
-              <label>Confirm Password</label>
-              <input
-                type="password"
-                name="passwordConfirm"
-                value={formData.passwordConfirm}
-                onChange={handleChange}
-                required
-                placeholder="••••••••"
-                autoComplete="new-password"
-              />
-            </motion.div>
             <motion.div variants={childVariants}>
               <div className="form-group form-group-column">
-                <label>City</label>
               </div>
               <CityAutocomplete
+                className="input-city"
                 value={formData.city}
                 onChange={(val) =>
                   setFormData((prevState) => ({
@@ -201,13 +171,7 @@ const RegisterForm = () => {
             </motion.div>
             <motion.div
               variants={childVariants}
-              className="form-group"
-              style={{
-                marginTop: "1rem",
-                display: "flex",
-                justifyContent: "flex-start",
-                gap: "1rem",
-              }}
+              className="btn-container"
             >
              <motion.button
                 className="Register-btn Back-Btn"
@@ -215,7 +179,6 @@ const RegisterForm = () => {
                 whileTap={{ scale: 0.9 }}
                 type="button"
                 onClick={handleBack}
-                style={{ width: "30%" }}
               >
                 Back
               </motion.button>

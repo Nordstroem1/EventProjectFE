@@ -33,10 +33,10 @@ const CityAutocomplete = ({ value, onChange, className }) => {
   };
 
   return (
-    <div className="form-group form-group-column"> 
+    <div> 
       <input
-        className={className} 
         type="text"
+        className={className} 
         value={query}
         placeholder="Enter your city..."
         onChange={(e) => {

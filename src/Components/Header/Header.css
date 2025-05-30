@@ -46,3 +46,9 @@
 button{
   font-size: 1.1rem;
 }
+.header-btn{
+  padding: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer
+}
