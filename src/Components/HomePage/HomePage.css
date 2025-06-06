@@ -23,8 +23,10 @@
 }
 .search-input{
   margin-top: 40px;
-  border: 1px solid #514dc4;
+  border: 1.4px solid #514dc4;
   width: 100%;
+  border-radius: 7px;
+  padding: 5px;
 }
 
 .event-list{

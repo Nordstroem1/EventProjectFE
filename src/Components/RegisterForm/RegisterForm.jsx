@@ -8,6 +8,7 @@ import { PiPersonSimpleHikeThin } from "react-icons/pi";
 import CityAutocomplete from "./CityAutoComplete";
 import { FaImage } from "react-icons/fa";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const containerVariants = {
   hidden: { opacity: 0, y: -100 },
@@ -39,9 +40,10 @@ const RegisterForm = () => {
     city: "",
   });
 
-  const [profilePic, setProfilePic] = useState(null); 
+  const [profilePic, setProfilePic] = useState(null);
   const [error, setError] = useState("");
   const options = countryList().getData();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -49,18 +51,6 @@ const RegisterForm = () => {
       ...prevState,
       [name]: value,
     }));
-  };
-
-  const handleProfilePicChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) {
-      setError("No file selected.");
-    } else if (!file.type.startsWith("image/")) {
-      setError("Please select a valid image file.");
-    } else {
-      setError("");
-      setProfilePic(file); 
-    }
   };
 
   const handleSubmit = async (e) => {
@@ -71,38 +61,50 @@ const RegisterForm = () => {
       !formData.email ||
       !formData.username ||
       !formData.password ||
-      !formData.city 
+      !formData.city
     ) {
       setError("Please fill in all required fields.");
       return;
     }
 
-     try {
-      // Create FormData object to handle file upload
+    try {
       const formDataToSend = new FormData();
-      formDataToSend.append("email", formData.email);
-      formDataToSend.append("username", formData.username);
-      formDataToSend.append("password", formData.password);
-      formDataToSend.append("city", formData.city);
+      formDataToSend.append("UserName", formData.username);
+      formDataToSend.append("Email", formData.email);
+      formDataToSend.append("Password", formData.password);
+      formDataToSend.append("LivingLocation", formData.city);
+
       if (profilePic) {
-        formDataToSend.append("profilePic", profilePic);
+        formDataToSend.append("profilePicture", profilePic);
+      } else {
+        setError("Please select a profile picture.");
+        return;
       }
 
-      const response = await axios.post('https://localhost:58296/api/User/CreateUser', formDataToSend, {
-        headers: {
-          "Content-Type": "multipart/form-data", 
-        },
-      });
+      const response = await axios.post(
+        "https://localhost:58296/api/User/CreateUser",
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );      console.log("Registration successful:", response.data);
 
-      console.log("Registration successful:", response.data);
-
-      // Show success message or redirect
-      alert("Registration successful!");
+      // Navigate to login form with email pre-filled
+      navigate(`/LoginForm?email=${encodeURIComponent(formData.email)}`);
     } catch (err) {
       console.error(err);
-      setError(
-        err.response?.data?.message || "An error occurred. Please try again."
-      );
+      console.log("Full error response:", err.response?.data);
+      
+      const backendError = 
+        err.response?.data?.message ||
+        err.response?.data?.errorMessage ||
+        err.response?.data?.errors?.Password?.join(", ") ||
+        (typeof err.response?.data === 'string' ? err.response.data : null) ||
+        "An error occurred. Please try again.";
+      
+      setError(backendError);
     }
   };
 
@@ -161,10 +163,8 @@ const RegisterForm = () => {
                 name="username"
                 value={formData.username}
                 onChange={handleChange}
-                required
-                placeholder="Username..."
                 maxLength={50}
-                autoComplete="username"
+                placeholder="Username..."
               />
             </motion.div>
             <motion.div
@@ -227,7 +227,8 @@ const RegisterForm = () => {
                       setError("Please select a valid image file.");
                     } else {
                       setError("");
-                      console.log("Selected file:", file);
+                      setProfilePic(file);
+                      console.log("Selected file details:", file);
                     }
                   }}
                   className="profile-pic-input"
@@ -241,7 +242,7 @@ const RegisterForm = () => {
                 >
                   <span className="img-upload-content">
                     <FaImage className="image-icon" />
-                    Profile Pic
+                    Profile Picture
                   </span>
                 </motion.button>
               </div>
@@ -260,7 +261,6 @@ const RegisterForm = () => {
                 className="btn-primary login-button"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                onClick={() => console.log("Login")}
                 type="submit"
               >
                 Register

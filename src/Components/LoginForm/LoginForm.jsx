@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./LoginForm.css";
@@ -13,6 +13,15 @@ const LoginForm = () => {
   const [animateOut, setAnimateOut] = useState(false);
 
   const navigate = useNavigate();
+
+  // Pre-fill email from URL parameter if coming from registration
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const emailFromUrl = urlParams.get('email');
+    if (emailFromUrl) {
+      setIdentifier(emailFromUrl);
+    }
+  }, []);
 
   const loginAnimation = {
     initial: { opacity: 1, y: 0 },

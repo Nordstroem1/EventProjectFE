@@ -2,19 +2,21 @@
     width: 100%;
     padding: 5px;
     border-radius: 7px;
+    margin: auto;
     margin-bottom: 10px;
     border: 1.5px solid #514dc4;
 }
 
 .event-form-container {
     font-size: 1.1rem;
-    padding: 25px;
+    padding: 25px; /* Ensure consistent padding */
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
-    align-items: stretch;    /* stretch children to full width */
+    align-items: center; /* Center child elements horizontally */
+    width: 100%; /* Ensure the container spans full width */
 }
 
 .switch-group {
@@ -78,4 +80,17 @@
     justify-content: center;
     align-items: center;
     transition: background-color 0.2s;
+}
+
+/* Ensure CityAutocomplete and DatePicker inputs match the width of other inputs */
+.react-datepicker-wrapper, .city-autocomplete {
+    display: block; /* Ensure they behave like block elements */
+    width: 100%; /* Match the width of other inputs */
+}
+
+.react-datepicker-wrapper input, .city-autocomplete input {
+    width: 100%; /* Ensure input spans full width */
+    padding: 5px;
+    border-radius: 7px;
+    border: 1.5px solid #514dc4;
 }
