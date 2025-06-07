@@ -5,7 +5,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import "./RegisterForm.css";
 import "../../index.css";
 import { PiPersonSimpleHikeThin } from "react-icons/pi";
-import CityAutocomplete from "./CityAutoComplete";
 import { FaImage } from "react-icons/fa";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -39,10 +38,8 @@ const RegisterForm = () => {
     password: "",
     city: "",
   });
-
   const [profilePic, setProfilePic] = useState(null);
   const [error, setError] = useState("");
-  const options = countryList().getData();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -57,6 +54,7 @@ const RegisterForm = () => {
     e.preventDefault();
     setError("");
 
+    // Enhanced validation
     if (
       !formData.email ||
       !formData.username ||
@@ -65,8 +63,11 @@ const RegisterForm = () => {
     ) {
       setError("Please fill in all required fields.");
       return;
+    } // Validate profile picture
+    if (!profilePic) {
+      setError("Please select a profile picture.");
+      return;
     }
-
     try {
       const formDataToSend = new FormData();
       formDataToSend.append("UserName", formData.username);
@@ -74,12 +75,7 @@ const RegisterForm = () => {
       formDataToSend.append("Password", formData.password);
       formDataToSend.append("LivingLocation", formData.city);
 
-      if (profilePic) {
-        formDataToSend.append("profilePicture", profilePic);
-      } else {
-        setError("Please select a profile picture.");
-        return;
-      }
+      formDataToSend.append("profilePicture", profilePic);
 
       const response = await axios.post(
         "https://localhost:58296/api/User/CreateUser",
@@ -89,21 +85,21 @@ const RegisterForm = () => {
             "Content-Type": "multipart/form-data",
           },
         }
-      );      console.log("Registration successful:", response.data);
+      );
+      console.log("Registration successful:", response.data);
 
-      // Navigate to login form with email pre-filled
       navigate(`/LoginForm?email=${encodeURIComponent(formData.email)}`);
     } catch (err) {
       console.error(err);
       console.log("Full error response:", err.response?.data);
-      
-      const backendError = 
+
+      const backendError =
         err.response?.data?.message ||
         err.response?.data?.errorMessage ||
         err.response?.data?.errors?.Password?.join(", ") ||
-        (typeof err.response?.data === 'string' ? err.response.data : null) ||
+        (typeof err.response?.data === "string" ? err.response.data : null) ||
         "An error occurred. Please try again.";
-      
+
       setError(backendError);
     }
   };
@@ -159,6 +155,7 @@ const RegisterForm = () => {
               style={{ marginTop: "1rem" }}
             >
               <input
+                className="input-field"
                 type="text"
                 name="username"
                 value={formData.username}
@@ -172,6 +169,7 @@ const RegisterForm = () => {
               className="form-group form-group-column"
             >
               <input
+                className="input-field"
                 type="email"
                 name="email"
                 value={formData.email}
@@ -187,6 +185,7 @@ const RegisterForm = () => {
               className="form-group form-group-column"
             >
               <input
+                className="input-field"
                 type="password"
                 name="password"
                 value={formData.password}
@@ -196,17 +195,18 @@ const RegisterForm = () => {
                 autoComplete="new-password"
               />
             </motion.div>
-            <motion.div variants={childVariants}>
-              <div className="form-group form-group-column"></div>
-              <CityAutocomplete
-                className="input-city"
+            <motion.div
+              variants={childVariants}
+              className="form-group form-group-column"
+            >
+              <input
+                className="input-field"
+                type="text"
+                name="city"
                 value={formData.city}
-                onChange={(val) =>
-                  setFormData((prevState) => ({
-                    ...prevState,
-                    city: val,
-                  }))
-                }
+                onChange={handleChange}
+                placeholder="Enter your livning location..."
+                required
               />
             </motion.div>
             <motion.div

@@ -27,6 +27,7 @@
   width: 100%;
   border-radius: 7px;
   padding: 5px;
+  margin-bottom: 10px;
 }
 
 .event-list{
@@ -70,4 +71,5 @@
   border-radius: 20px;
   position: relative;
   z-index: 1000;
+  min-width: 340px;
 }

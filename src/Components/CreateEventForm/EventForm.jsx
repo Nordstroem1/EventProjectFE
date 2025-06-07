@@ -2,7 +2,6 @@ import { useState } from "react";
 import "../../index.css";
 import { motion } from "framer-motion";
 import "./EventForm.css";
-import CityAutocomplete from "../RegisterForm/CityAutoComplete.jsx";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Switch from "react-switch";
@@ -18,9 +17,10 @@ const EventForm = ({ onClose }) => {
   const [description, setDescription] = useState("");
   const [bgFile, setBgFile] = useState(null);
   const [error, setError] = useState("");
+  const [bgPreview, setBgPreview] = useState(null);
 
   const isEndInvalid = startDate && endDate && endDate < startDate;
-  const [bgPreview, setBgPreview] = useState(null);
+
   const handleBgChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -31,6 +31,20 @@ const EventForm = ({ onClose }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Enhanced validation
+    if (!eventName || !location || !startDate || !endDate) {
+      setError("Please fill in all required fields.");
+      return;
+    }
+
+    if (endDate < startDate) {
+      setError("End date must be after start date.");
+      return;
+    }
+
+    setError(""); // Clear errors
+
     // Process form submission
     console.log({
       eventName,
@@ -70,7 +84,15 @@ const EventForm = ({ onClose }) => {
 
       <form onSubmit={handleSubmit} className="event-form">
         <div className="form-group">
-          <h2 style={{ fontWeight: "bold", fontSize: "35px" }}>Create Event</h2>
+          <h2 className="event-title">Create Event</h2>
+          {error && (
+            <div
+              className="error-message"
+              style={{ color: "red", margin: "10px 0" }}
+            >
+              {error}
+            </div>
+          )}
           <input
             className="input-field"
             type="text"
@@ -86,21 +108,11 @@ const EventForm = ({ onClose }) => {
             type="file"
             id="bg-input"
             accept="image/*"
-            onChange={(e) => {
-              const file = e.target.files[0];
-              if (!file) {
-                setError("No file selected.");
-              } else if (!file.type.startsWith("image/")) {
-                setError("Please select a valid image file.");
-              } else {
-                setError(""); // Clear error
-                console.log("Selected file:", file);
-              }
-            }}
+            onChange={handleBgChange}
             style={{ display: "none" }}
           />
           <motion.button
-            className="img-upload-button"
+            className="event-img-upload-button"
             type="button"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -110,6 +122,7 @@ const EventForm = ({ onClose }) => {
             Choose Image
           </motion.button>
         </div>
+
         {bgPreview && (
           <div className="form-group">
             <p className="preview-text">{bgPreview}</p>
@@ -117,10 +130,13 @@ const EventForm = ({ onClose }) => {
         )}
 
         <div className="form-group">
-          <CityAutocomplete
+          <input
             className="input-field"
+            type="text"
             value={location}
-            onChange={setLocation}
+            onChange={(e) => setLocation(e.target.value)}
+            placeholder="Enter event location..."
+            required
           />
         </div>
 
@@ -151,7 +167,7 @@ const EventForm = ({ onClose }) => {
         </div>
 
         <div className="switch-group">
-          <span className="switch-label">Public or Private</span>
+          <span className="switch-label">Private Event?</span>
           <Switch
             onChange={(checked) => setIsPrivate(checked)}
             checked={isPrivate}
@@ -164,13 +180,19 @@ const EventForm = ({ onClose }) => {
           />
         </div>
 
-        <textarea
-          className="description-field input-field"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          rows="4"
-          placeholder="Event description..."
-        />
+        <div className="form-group">
+          <textarea
+            className="description-field input-field"
+            value={description}
+            placeholder="Event description..."
+            style={{ height: "auto", overflowY: "auto" }}
+            onInput={(e) => {
+              e.target.style.height = "auto";
+              e.target.style.height = `${e.target.scrollHeight}px`;
+              setDescription(e.target.value);
+            }}
+          />
+        </div>
 
         <motion.button
           type="submit"

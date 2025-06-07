@@ -1,10 +1,10 @@
 .input-field {
-    width: 100%;
     padding: 5px;
     border-radius: 7px;
     margin: auto;
     margin-bottom: 10px;
     border: 1.5px solid #514dc4;
+    width: 100%;  /* full width to match other inputs */
 }
 
 .event-form-container {
@@ -39,16 +39,23 @@
 
 .description-field {
     width: 100%;
+    max-height: 250px;    /* limit the field height */
+    overflow-y: auto;     /* enable scrolling when content overflows */
 }
-
-.img-upload-button {
+.event-title{
+    font-size: 35px;
+    font-weight: bold;
+    color: #000000;
+    margin-bottom: 30px;
+}
+.event-img-upload-button {
     cursor: pointer;
     border: 1.5px solid #514dc4;
     background-color: #fff;
     border-radius: 7px;
     padding: 5px 10px;
-    margin: 8px 0;
-    width: 100%;
+    width: 90%;
+    margin-bottom: 20px;
 }
 
 .preview-text {
@@ -82,14 +89,11 @@
     transition: background-color 0.2s;
 }
 
-/* Ensure CityAutocomplete and DatePicker inputs match the width of other inputs */
-.react-datepicker-wrapper, .city-autocomplete {
-    display: block; /* Ensure they behave like block elements */
-    width: 100%; /* Match the width of other inputs */
+.react-datepicker-wrapper {
+    width: 100%; /* ensure the datepicker spans full container width */
 }
 
-.react-datepicker-wrapper input, .city-autocomplete input {
-    width: 100%; /* Ensure input spans full width */
+.react-datepicker-wrapper input{
     padding: 5px;
     border-radius: 7px;
     border: 1.5px solid #514dc4;

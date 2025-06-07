@@ -80,7 +80,7 @@ const LoginForm = () => {
         animate={animateOut ? "exit" : "initial"}
         variants={loginAnimation}
       >
-        <h1>Sign in</h1>
+        <h1 className="form-title">Sign In</h1>
         {error && (
           <label className="custom-error-label text-danger" htmlFor="error">
             {error}
@@ -88,9 +88,6 @@ const LoginForm = () => {
         )}
         <form onSubmit={handleSubmit} noValidate>
           <div className="mb-3">
-            <label htmlFor="identifier" className="form-label">
-              Username or Email
-            </label>
             <input
               type="text"
               id="identifier"
@@ -103,9 +100,6 @@ const LoginForm = () => {
             />
           </div>
           <div className="mb-3">
-            <label htmlFor="password" className="form-label">
-              Password
-            </label>
             <input
               type="password"
               id="password"
@@ -123,7 +117,7 @@ const LoginForm = () => {
             whileTap={{ scale: 0.9 }}
             type="submit"
           >
-            Login
+            Sign In
           </motion.button>
         </form>
         <div className="text-center mt-3">

@@ -1,14 +1,17 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./userprofilepage.css";
 import { motion } from "framer-motion";
 import axios from "axios";
 
 const UserProfilePage = ({ userId, token }) => {
+  const navigate = useNavigate();
   const [profilePic, setProfilePic] = useState(null);
   const [username, setUsername] = useState("");
   const [location, setLocation] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   // Fetch user data on component mount
   useEffect(() => {
@@ -41,6 +44,25 @@ const UserProfilePage = ({ userId, token }) => {
     } catch (err) {
       setError("Failed to update profile.");
     }
+  };
+
+  const handleDeleteClick = () => {
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      await axios.delete(`/api/users/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      navigate("/");
+    } catch (err) {
+      setError("Failed to delete account.");
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteModal(false);
   };
 
   if (loading) return <p>Loading...</p>;
@@ -106,6 +128,31 @@ const UserProfilePage = ({ userId, token }) => {
         <motion.button onClick={handleSave} className="update-button">
           Update Changes
         </motion.button>
+        <motion.button onClick={handleDeleteClick} className="delete-button">
+          Delete Account
+        </motion.button>
+        {showDeleteModal && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <p className="modal-text">
+                Are you sure you want to delete your account? This cannot be
+                undone.
+              </p>
+              <button
+                className="modal-btn confirm"
+                onClick={handleConfirmDelete}
+              >
+                Yes
+              </button>
+              <button
+                className="modal-btn cancel"
+                onClick={handleCancelDelete}
+              >
+                No
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </motion.div>
   );

@@ -8,37 +8,24 @@
     margin-top: 100px;
     flex-direction: column;
     padding: 20px;
-  }
+}
 
-input {
+.input-field {
     padding: 5px;
-    border: 1px solid #ccc;
+    border: 1.3px solid #2563EB;
     border-radius: 5px;
     margin-bottom: 20px;
-    width: 100%;
     height: 2.5rem;
-}
-.input-city{
-     padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 20px;
     width: 90%;
-    height: 2.5rem;
-    margin-right: 30px;
 }
 
-.my-custom-select {
-  width: 100%;
-}
-input:focus {
+.input-field:focus {
     border-color: #2563EB;
     outline: none;
 }
 .form-group-column {
   display: flex;
   flex-direction: column;
-  width: 90%;
   align-items: center;
   align-self: center;
 }
@@ -53,7 +40,7 @@ input:focus {
   margin-bottom: 0.5rem;
   border-radius: 15px 15px 0 0;
   text-align: center; 
-    margin: -20px -20px 0 
+  margin: -20px -20px 0 
 }
 
 .Register-Extra-Div-Text{
@@ -71,6 +58,14 @@ input:focus {
     width: 100%;
     margin-top: 10px;
     gap: 10px;
+}
+.btn-container .Back-Btn,
+.btn-container .login-button {
+  height: 3rem;           
+  margin: 0;              
+  display: flex;
+  align-items: center;       
+  justify-content: center;   
 }
 .Back-Btn{
   border-radius: 10px;
@@ -91,12 +86,13 @@ input:focus {
   width: 22px;
 }
 .img-upload-button{
-  width: 100%;
+  width: 90%;
   padding: 5px;
-  border: 1px solid #ccc;
   border-radius: 5px;
   margin-bottom: 20px;
   height: 2.5rem;
+  border: 1.2px solid #514dc4;
+  background-color: white;
 }
 .img-upload-content {
   display: flex;
