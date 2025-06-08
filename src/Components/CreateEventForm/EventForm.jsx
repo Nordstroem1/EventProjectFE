@@ -7,8 +7,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import Switch from "react-switch";
 import { CiImageOn } from "react-icons/ci";
 import { IoClose } from "react-icons/io5";
+import axios from "axios";
 
-const EventForm = ({ onClose }) => {
+const EventForm = ({ onClose, onEventCreated }) => {
   const [eventName, setEventName] = useState("");
   const [location, setLocation] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -29,7 +30,7 @@ const EventForm = ({ onClose }) => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Enhanced validation
@@ -45,15 +46,46 @@ const EventForm = ({ onClose }) => {
 
     setError(""); // Clear errors
 
-    // Process form submission
-    console.log({
-      eventName,
-      location,
-      startDate,
-      endDate,
-      isPrivate,
-      description,
-    });
+    try {
+      const token = localStorage.getItem("jwtToken");
+
+      const data = new FormData();
+      data.append("EventName", eventName);
+      data.append("Location", location);
+      data.append("StartDate", startDate.toISOString());
+      data.append("EndDate", endDate.toISOString());
+      data.append("IsPrivate", isPrivate);
+      data.append("Description", description);
+
+      if (bgFile) {
+        data.append("ImageFile", bgFile);
+      } else {
+        setError("Please upload a background image.");
+        return;
+      }
+
+      const response = await axios.post(
+        "https://localhost:58296/api/Event/createEvent",
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // The API returns an envelope with a `data` property containing the event
+      const envelope = response.data;
+      const newEvent = envelope.data;
+      console.log("Event created:", newEvent);
+      // Notify parent and close
+      if (onEventCreated) onEventCreated(newEvent);
+      onClose();
+    } catch (err) {
+      console.error(err);
+      const apiError = err.response?.data?.message || err.message;
+      setError(apiError);
+    }
   };
 
   const containerVariants = {
@@ -93,14 +125,18 @@ const EventForm = ({ onClose }) => {
               {error}
             </div>
           )}
-          <input
-            className="input-field"
-            type="text"
-            placeholder="Event Title..."
-            value={eventName}
-            onChange={(e) => setEventName(e.target.value)}
-            required
-          />
+          <div className="input-with-counter">
+            <input
+              className="input-field"
+              type="text"
+              placeholder="Event Title..."
+              value={eventName}
+              onChange={(e) => setEventName(e.target.value)}
+              required
+              maxLength={45}
+            />
+            <span className="char-counter">{eventName.length}/45</span>
+          </div>
         </div>
 
         <div className="form-group">
@@ -130,14 +166,18 @@ const EventForm = ({ onClose }) => {
         )}
 
         <div className="form-group">
-          <input
-            className="input-field"
-            type="text"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            placeholder="Enter event location..."
-            required
-          />
+          <div className="input-with-counter">
+            <input
+              className="input-field"
+              type="text"
+              placeholder="Enter event location..."
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              required
+              maxLength={40}
+            />
+            <span className="char-counter">{location.length}/40</span>
+          </div>
         </div>
 
         <div className="form-group">
@@ -181,17 +221,21 @@ const EventForm = ({ onClose }) => {
         </div>
 
         <div className="form-group">
-          <textarea
-            className="description-field input-field"
-            value={description}
-            placeholder="Event description..."
-            style={{ height: "auto", overflowY: "auto" }}
-            onInput={(e) => {
-              e.target.style.height = "auto";
-              e.target.style.height = `${e.target.scrollHeight}px`;
-              setDescription(e.target.value);
-            }}
-          />
+          <div className="input-with-counter">
+            <textarea
+              className="description-field input-field"
+              value={description}
+              placeholder="Event description..."
+              maxLength={300}
+              style={{ height: "auto", overflowY: "auto" }}
+              onInput={(e) => {
+                e.target.style.height = "auto";
+                e.target.style.height = `${e.target.scrollHeight}px`;
+                setDescription(e.target.value);
+              }}
+            />
+            <span className="char-counter">{description.length}/300</span>
+          </div>
         </div>
 
         <motion.button

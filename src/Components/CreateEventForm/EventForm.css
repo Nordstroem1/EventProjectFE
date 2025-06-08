@@ -3,13 +3,33 @@
     border-radius: 7px;
     margin: auto;
     margin-bottom: 10px;
-    border: 1.5px solid #514dc4;
+    border: 1.3px solid #514dc4;
     width: 100%;  /* full width to match other inputs */
+}
+
+/* wrap input and counter */
+.input-with-counter {
+  position: relative;
+  width: 100%;
+}
+/* counter inside input */
+.char-counter {
+  position: absolute;
+  right: 20px;
+  top: 35%;
+  transform: translateY(-50%);
+  font-size: 0.75rem;
+  color: #666;
+  pointer-events: none;
+}
+/* add space on right for the counter */
+.input-with-counter .input-field {
+  padding-right: 3rem;
 }
 
 .event-form-container {
     font-size: 1.1rem;
-    padding: 25px; /* Ensure consistent padding */
+    padding: 15px; /* Ensure consistent padding */
 }
 
 .form-group {
@@ -50,7 +70,7 @@
 }
 .event-img-upload-button {
     cursor: pointer;
-    border: 1.5px solid #514dc4;
+    border: 1.3px solid #514dc4;
     background-color: #fff;
     border-radius: 7px;
     padding: 5px 10px;
@@ -96,5 +116,5 @@
 .react-datepicker-wrapper input{
     padding: 5px;
     border-radius: 7px;
-    border: 1.5px solid #514dc4;
+    border: 1.3px solid #514dc4;
 }

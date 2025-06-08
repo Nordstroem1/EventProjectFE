@@ -6,6 +6,7 @@
     box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2), 0 4px 10px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
+    min-width: 350px;
 }
 .event-image {
     width: 100%;

@@ -5,6 +5,8 @@ import { MdLogin } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { LuUserRoundPlus } from "react-icons/lu";
 import { useNavigate } from 'react-router-dom';
+import { MdLogout } from "react-icons/md";
+
 
 
 const menuVariants = {
@@ -29,8 +31,10 @@ const itemVariants = {
 };
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const toggleMenu = () => setMenuOpen(prev => !prev);
   const navigate = useNavigate();
+  const toggleMenu = () => setMenuOpen(prev => !prev);
+  // Check if user is authenticated
+  const token = localStorage.getItem('jwtToken');
 
   return (
     <>
@@ -84,45 +88,51 @@ const Header = () => {
         borderRadius: '0 0 10px 10px'
       }}
     >
-      <motion.button
-        className='header-btn'
-        variants={itemVariants}
-        whileTap={{ scale: 1.1 }}
-        onClick={() => {
-          navigate('/login');
-          setMenuOpen(false);
-        }}
-        
-      >
-        <MdLogin className='icon' />
-        Sign in
-      </motion.button>
-
-      <motion.button
-        className='header-btn'
-        variants={itemVariants}
-        whileTap={{ scale: 1.1 }}
-        onClick={() =>{
-          navigate('/register')
-          setMenuOpen(false);
-        }}
-      >
-        <LuUserRoundPlus className='icon' />
-        Sign up
-      </motion.button>
-
-      <motion.button
-        variants={itemVariants}
-        whileTap={{ scale: 1.1 }}
-        onClick={() =>{
-          navigate('/ProfilePage')
-          setMenuOpen(false);
-        }}
-        className='header-btn'
-      >
-        <CgProfile className='icon' />
-        Profile
-      </motion.button>
+      {/* Show Sign In/Up when not authenticated, else Profile/Logout */}
+      {!token ? (
+        <>
+          <motion.button
+            className='header-btn'
+            variants={itemVariants}
+            whileTap={{ scale: 1.1 }}
+            onClick={() => { navigate('/login'); setMenuOpen(false); }}
+          >
+            <MdLogin className='icon' /> Sign in
+          </motion.button>
+          <motion.button
+            className='header-btn'
+            variants={itemVariants}
+            whileTap={{ scale: 1.1 }}
+            onClick={() =>{ navigate('/register'); setMenuOpen(false); }}
+          >
+            <LuUserRoundPlus className='icon' /> Sign up
+          </motion.button>
+        </>
+      ) : (
+        <>
+          <motion.button
+            className='header-btn'
+            variants={itemVariants}
+            whileTap={{ scale: 1.1 }}
+            onClick={() =>{ navigate('/ProfilePage'); setMenuOpen(false); }}
+          >
+            <CgProfile className='icon' /> Profile
+          </motion.button>
+          <motion.button
+            className='header-btn'
+            variants={itemVariants}
+            whileTap={{ scale: 1.1 }}
+            onClick={() => {
+              localStorage.removeItem('jwtToken');
+              navigate('/login');
+              setMenuOpen(false);
+            }}
+          >
+            <MdLogout className='icon'/>
+            Logout
+          </motion.button>
+        </>
+      )}
     </motion.div>
   )}
 </AnimatePresence>

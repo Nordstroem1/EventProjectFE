@@ -52,18 +52,41 @@ const LoginForm = () => {
         "https://localhost:58296/api/User/Login",
         payload
       );
-      console.log(response.data);
-
-      if (response.data && response.data.token) {
-        localStorage.setItem("jwtToken", response.data.token);
-        setAnimateOut(true);
-        setTimeout(() => {
-          navigate("/HomePage");
-        }, 700);
+      console.log('Login response payload:', response.data);
+      // Support both object ({ token }) and raw string responses
+      const returnedToken = typeof response.data === 'string'
+        ? response.data
+        : response.data.token;
+      if (returnedToken) {
+        try {
+          localStorage.setItem('jwtToken', returnedToken);
+          console.log('Token stored in localStorage:', localStorage.getItem('jwtToken'));
+        } catch (storageErr) {
+          console.error('Failed to write token into localStorage', storageErr);
+          setError('Unable to save authentication token');
+          return;
+        }
+      } else {
+        console.error('No token field in login response');
+        setError('No authentication token received');
+        return;
       }
+      // After storing token, navigate
+      navigate('/HomePage');
+      return;
     } catch (err) {
       if (err.response) {
-        setError(err.response.data.message || "Invalid credentials.");
+        const data = err.response.data;
+        // Try standard message fields
+        let backendMsg = data.message || data.errorMessage;
+        // Flatten validation errors if present
+        if (!backendMsg && data.errors) {
+          const errs = data.errors;
+          backendMsg = Object.values(errs)
+            .flat()
+            .join(', ');
+        }
+        setError(backendMsg || "Invalid credentials.");
       } else if (err.request) {
         setError("Network error. Please try again later.");
       } else {
