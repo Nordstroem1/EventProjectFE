@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import countryList from "react-select-country-list";
 import { AnimatePresence, motion } from "framer-motion";
@@ -8,6 +8,8 @@ import { PiPersonSimpleHikeThin } from "react-icons/pi";
 import { FaImage } from "react-icons/fa";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { MapContainer, TileLayer, useMap } from 'react-leaflet';
+import LocationPicker from '../../Shared/LocationPicker/LocationPicker';
 
 const containerVariants = {
   hidden: { opacity: 0, y: -100 },
@@ -30,7 +32,19 @@ const childVariants = {
   visible: { opacity: 1, x: 0 },
 };
 
+// Component to re-center map on markerPosition changes
+function Recenter({ position }) {
+  const map = useMap();
+  useEffect(() => {
+    map.invalidateSize();
+    map.flyTo(position, map.getZoom());
+  }, [position]);
+  return null;
+}
+
 const RegisterForm = () => {
+  // Toggle map overlay
+  const [showMap, setShowMap] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
@@ -40,6 +54,8 @@ const RegisterForm = () => {
   });
   const [profilePic, setProfilePic] = useState(null);
   const [error, setError] = useState("");
+  const [markerPosition, setMarkerPosition] = useState([59.3293, 18.0686]);
+  const mapRef = useRef(null);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -74,6 +90,9 @@ const RegisterForm = () => {
       formDataToSend.append("Email", formData.email);
       formDataToSend.append("Password", formData.password);
       formDataToSend.append("LivingLocation", formData.city);
+      // include picked coordinates
+      formDataToSend.append("Latitude", markerPosition[0]);
+      formDataToSend.append("Longitude", markerPosition[1]);
 
       formDataToSend.append("profilePicture", profilePic);
 
@@ -108,6 +127,42 @@ const RegisterForm = () => {
     setIsExiting(true);
     setTimeout(() => window.history.back(), 200);
   };
+
+  // Called when user clicks 'Use My Location'
+  const handleUseMyLocation = () => {
+    if (!navigator.geolocation) {
+      setError('Geolocation not supported');
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        const newPos = [coords.latitude, coords.longitude];
+        setMarkerPosition(newPos);
+        if (mapRef.current) {
+          mapRef.current.invalidateSize();
+          mapRef.current.flyTo(newPos, 12);
+        }
+      },
+      (err) => setError('Unable to fetch location: ' + err.message)
+    );
+  };
+
+  // Handle map-click and picker changes
+  const handleLocationChange = (coords) => {
+    setMarkerPosition(coords);
+    if (mapRef.current) {
+      mapRef.current.invalidateSize();
+      // recenter map
+      mapRef.current.flyTo(coords, mapRef.current.getZoom());
+    }
+  };
+
+  // On mount ensure the map container is correctly sized
+  useEffect(() => {
+    if (mapRef.current) {
+      mapRef.current.invalidateSize();
+    }
+  }, []);
 
   return (
     <AnimatePresence>
@@ -205,9 +260,46 @@ const RegisterForm = () => {
                 name="city"
                 value={formData.city}
                 onChange={handleChange}
-                placeholder="Enter your livning location..."
+                placeholder="Enter your living location..."
                 required
               />
+             <motion.button
+                className="img-upload-button"
+                type="button"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => setShowMap(prev => !prev)}
+              >
+                Choose Location
+              </motion.button>
+              {showMap && (
+                <div className="map-overlay" onClick={() => setShowMap(false)}>
+                  <div onClick={e => e.stopPropagation()}>
+                    <MapContainer
+                      center={markerPosition}
+                      zoom={12}
+                      whenCreated={map => (mapRef.current = map)}
+                      eventHandlers={{ zoomend: () => mapRef.current?.invalidateSize() }}
+                      className="location-picker"
+                    >
+                      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                      <LocationPicker position={markerPosition} onChange={handleLocationChange} />
+                      <Recenter position={markerPosition} />
+                    </MapContainer>
+                    <div className="map-overlay-controls">
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        type="button"
+                        className="gps-button"
+                        onClick={handleUseMyLocation}
+                      >
+                        Use My Location
+                      </motion.button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </motion.div>
             <motion.div
               variants={childVariants}

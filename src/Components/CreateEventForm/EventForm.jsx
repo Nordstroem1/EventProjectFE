@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import "../../index.css";
 import { motion } from "framer-motion";
 import "./EventForm.css";
+import { MapContainer, TileLayer, useMap } from "react-leaflet";
+import LocationPicker from "../../Shared/LocationPicker/LocationPicker";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Switch from "react-switch";
@@ -19,6 +21,45 @@ const EventForm = ({ onClose, onEventCreated }) => {
   const [bgFile, setBgFile] = useState(null);
   const [error, setError] = useState("");
   const [bgPreview, setBgPreview] = useState(null);
+  const [markerPosition, setMarkerPosition] = useState([59.3293, 18.0686]);
+  const mapRef = useRef(null);
+  // Toggle map overlay
+  const [showMap, setShowMap] = useState(false);
+
+  // Called when user clicks 'Use My Location'
+  const handleUseMyLocation = () => {
+    if (!navigator.geolocation) {
+      setError("Geolocation stöds ej");
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        const newPos = [coords.latitude, coords.longitude];
+        setMarkerPosition(newPos);
+        if (mapRef.current) {
+          mapRef.current.invalidateSize();
+          mapRef.current.flyTo(newPos, 5);
+        }
+      },
+      (err) => setError("Kunde inte hämta plats: " + err.message)
+    );
+  };
+
+  // Handle map-click or picker changes
+  const handleLocationChange = (coords) => {
+    setMarkerPosition(coords);
+    if (mapRef.current) {
+      mapRef.current.invalidateSize();
+      mapRef.current.flyTo(coords, mapRef.current.getZoom());
+    }
+  };
+
+  // On mount ensure the map container is correctly sized
+  useEffect(() => {
+    if (mapRef.current) {
+      mapRef.current.invalidateSize();
+    }
+  }, []);
 
   const isEndInvalid = startDate && endDate && endDate < startDate;
 
@@ -32,7 +73,6 @@ const EventForm = ({ onClose, onEventCreated }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     // Enhanced validation
     if (!eventName || !location || !startDate || !endDate) {
       setError("Please fill in all required fields.");
@@ -45,7 +85,6 @@ const EventForm = ({ onClose, onEventCreated }) => {
     }
 
     setError(""); // Clear errors
-
     try {
       const token = localStorage.getItem("jwtToken");
 
@@ -56,12 +95,13 @@ const EventForm = ({ onClose, onEventCreated }) => {
       data.append("EndDate", endDate.toISOString());
       data.append("IsPrivate", isPrivate);
       data.append("Description", description);
+      // include picked coordinates
+      data.append("Latitude", markerPosition[0]);
+      data.append("Longitude", markerPosition[1]);
 
+      // Append image file only if one is selected
       if (bgFile) {
         data.append("ImageFile", bgFile);
-      } else {
-        setError("Please upload a background image.");
-        return;
       }
 
       const response = await axios.post(
@@ -97,6 +137,16 @@ const EventForm = ({ onClose, onEventCreated }) => {
     hover: { scale: 1.05 },
     tap: { scale: 0.95 },
   };
+
+  // Component to pan/resize map when `position` changes
+  function Recenter({ position }) {
+    const map = useMap();
+    useEffect(() => {
+      map.invalidateSize();
+      map.flyTo(position, map.getZoom());
+    }, [position]);
+    return null;
+  }
 
   return (
     <motion.div
@@ -166,19 +216,49 @@ const EventForm = ({ onClose, onEventCreated }) => {
         )}
 
         <div className="form-group">
-          <div className="input-with-counter">
-            <input
-              className="input-field"
-              type="text"
-              placeholder="Enter event location..."
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              required
-              maxLength={40}
-            />
-            <span className="char-counter">{location.length}/40</span>
-          </div>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            type="button"
+            className="event-img-upload-button"
+            onClick={() => setShowMap((prev) => !prev)}
+          >
+            Choose Location
+          </motion.button>
         </div>
+        {showMap && (
+          <div className="map-overlay" onClick={() => setShowMap(false)}>
+            <div onClick={(e) => e.stopPropagation()}>
+              <MapContainer
+                center={markerPosition}
+                zoom={12}
+                whenCreated={(map) => (mapRef.current = map)}
+                eventHandlers={{
+                  zoomend: () => mapRef.current?.invalidateSize(),
+                }}
+                className="location-picker"
+              >
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                <LocationPicker
+                  position={markerPosition}
+                  onChange={handleLocationChange}
+                />
+                <Recenter position={markerPosition} />
+              </MapContainer>
+              <div className="map-overlay-controls">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  type="button"
+                  className="gps-button"
+                  onClick={handleUseMyLocation}
+                >
+                  Use My Location
+                </motion.button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="form-group">
           <DatePicker

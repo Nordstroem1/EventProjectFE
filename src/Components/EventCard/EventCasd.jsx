@@ -5,6 +5,7 @@ import { FaClock } from "react-icons/fa6";
 import { FaLocationDot } from "react-icons/fa6";
 import { RiAdminFill } from "react-icons/ri";
 import { BiSolidLike } from "react-icons/bi";
+import ImagePlaceholder from '../../Images/ImagePlaceHolder.png';
 
 const containerVariants = {
     hidden: {},
@@ -48,14 +49,12 @@ const EventCard = ({
         <RiAdminFill className="owner-Logo" style={{ marginTop: "3px" }} />
         <p>{createdBy}</p>
       </motion.div>
-      {imageUrl && (
-        <motion.img
-          src={imageUrl}
-          alt={eventName}
-          className="event-image"
-          variants={childVariants}
-        />
-      )}
+      <motion.img
+        src={imageUrl || ImagePlaceholder}
+        alt={eventName}
+        className="event-image"
+        variants={childVariants}
+      />
       <motion.div className="event-date" variants={childVariants}>
         <FaClock className="icons clock-Logo" style={{ marginTop: "3px" }} />
         <p>
