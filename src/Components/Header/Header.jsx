@@ -43,7 +43,7 @@ const Header = () => {
           <div className="header-logo"
            onClick={() => navigate('/homepage')} 
            style={{ cursor: 'pointer' }}>
-            <img src="/src/Images/The_Council_v.3.png" />
+            <img src= "https://res.cloudinary.com/dhpjnh2q0/image/upload/v1749848574/The_Council_v.3_bhe9tb.png" />
           </div>
           <div className="header-menu">
             <motion.button

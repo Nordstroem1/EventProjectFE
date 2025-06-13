@@ -55,6 +55,8 @@ const RegisterForm = () => {
   const [profilePic, setProfilePic] = useState(null);
   const [error, setError] = useState("");
   const [markerPosition, setMarkerPosition] = useState([59.3293, 18.0686]);
+  // Whether user has chosen/picked location
+  const [locationSet, setLocationSet] = useState(false);
   const mapRef = useRef(null);
   const navigate = useNavigate();
 
@@ -74,12 +76,17 @@ const RegisterForm = () => {
     if (
       !formData.email ||
       !formData.username ||
-      !formData.password ||
-      !formData.city
+      !formData.password
     ) {
       setError("Please fill in all required fields.");
       return;
-    } // Validate profile picture
+    }
+    // Ensure user picked a location
+    if (!locationSet) {
+      setError("Please choose your location on the map.");
+      return;
+    }
+    // Validate profile picture
     if (!profilePic) {
       setError("Please select a profile picture.");
       return;
@@ -89,11 +96,8 @@ const RegisterForm = () => {
       formDataToSend.append("UserName", formData.username);
       formDataToSend.append("Email", formData.email);
       formDataToSend.append("Password", formData.password);
-      formDataToSend.append("LivingLocation", formData.city);
-      // include picked coordinates
       formDataToSend.append("Latitude", markerPosition[0]);
       formDataToSend.append("Longitude", markerPosition[1]);
-
       formDataToSend.append("profilePicture", profilePic);
 
       const response = await axios.post(
@@ -109,8 +113,6 @@ const RegisterForm = () => {
 
       navigate(`/LoginForm?email=${encodeURIComponent(formData.email)}`);
     } catch (err) {
-      console.error(err);
-      console.log("Full error response:", err.response?.data);
 
       const backendError =
         err.response?.data?.message ||
@@ -136,19 +138,29 @@ const RegisterForm = () => {
     }
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
+        // mark location as chosen
+        setLocationSet(true);
+
         const newPos = [coords.latitude, coords.longitude];
+
         setMarkerPosition(newPos);
         if (mapRef.current) {
           mapRef.current.invalidateSize();
           mapRef.current.flyTo(newPos, 12);
         }
       },
-      (err) => setError('Unable to fetch location: ' + err.message)
+      (err) => {
+        console.error('Error fetching geolocation:', err);
+        setError('Unable to fetch location: ' + err.message);
+      }
     );
   };
 
   // Handle map-click and picker changes
   const handleLocationChange = (coords) => {
+    // mark location as chosen
+    setLocationSet(true);
+    console.log('Map clicked at coords:', coords);
     setMarkerPosition(coords);
     if (mapRef.current) {
       mapRef.current.invalidateSize();
@@ -254,15 +266,6 @@ const RegisterForm = () => {
               variants={childVariants}
               className="form-group form-group-column"
             >
-              <input
-                className="input-field"
-                type="text"
-                name="city"
-                value={formData.city}
-                onChange={handleChange}
-                placeholder="Enter your living location..."
-                required
-              />
              <motion.button
                 className="img-upload-button"
                 type="button"
@@ -320,7 +323,6 @@ const RegisterForm = () => {
                     } else {
                       setError("");
                       setProfilePic(file);
-                      console.log("Selected file details:", file);
                     }
                   }}
                   className="profile-pic-input"

@@ -1,11 +1,9 @@
-import React from "react";
 import { motion } from "framer-motion";
 import "./EventCard.css";
 import { FaClock } from "react-icons/fa6";
 import { FaLocationDot } from "react-icons/fa6";
 import { RiAdminFill } from "react-icons/ri";
 import { BiSolidLike } from "react-icons/bi";
-import ImagePlaceholder from '../../Images/ImagePlaceHolder.png';
 
 const containerVariants = {
     hidden: {},
@@ -50,7 +48,7 @@ const EventCard = ({
         <p>{createdBy}</p>
       </motion.div>
       <motion.img
-        src={imageUrl || ImagePlaceholder}
+        src={imageUrl || "https://res.cloudinary.com/dhpjnh2q0/image/upload/v1749848437/ImagePlaceHolder_mqb8gg.png"}
         alt={eventName}
         className="event-image"
         variants={childVariants}

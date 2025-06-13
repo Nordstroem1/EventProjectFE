@@ -34,19 +34,25 @@ const EventForm = ({ onClose, onEventCreated }) => {
     }
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
+        console.log("Geolocation position:", coords);
         const newPos = [coords.latitude, coords.longitude];
+        console.log("New markerPosition set to:", newPos);
         setMarkerPosition(newPos);
         if (mapRef.current) {
           mapRef.current.invalidateSize();
           mapRef.current.flyTo(newPos, 5);
         }
       },
-      (err) => setError("Kunde inte hämta plats: " + err.message)
+      (err) => {
+        console.error("Error fetching geolocation:", err);
+        setError("Kunde inte hämta plats: " + err.message);
+      }
     );
   };
 
   // Handle map-click or picker changes
   const handleLocationChange = (coords) => {
+    console.log("Map clicked at coords:", coords);
     setMarkerPosition(coords);
     if (mapRef.current) {
       mapRef.current.invalidateSize();
