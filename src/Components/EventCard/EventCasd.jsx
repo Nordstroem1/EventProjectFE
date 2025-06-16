@@ -6,18 +6,21 @@ import { RiAdminFill } from "react-icons/ri";
 import { BiSolidLike } from "react-icons/bi";
 
 const containerVariants = {
-    hidden: {},
-    visible: {
-        transition: {
-            staggerChildren: 0.1,
-        },
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.1,
     },
+  },
 };
 
 const childVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
 };
+
+const placeholder =
+  "https://res.cloudinary.com/dhpjnh2q0/image/upload/v1749848437/ImagePlaceHolder_mqb8gg.png";
 
 const EventCard = ({
   eventId,
@@ -33,7 +36,7 @@ const EventCard = ({
   likeList,
 }) => {
   return (
-       <motion.div
+    <motion.div
       className="event-card"
       variants={containerVariants}
       initial="hidden"
@@ -48,7 +51,7 @@ const EventCard = ({
         <p>{createdBy}</p>
       </motion.div>
       <motion.img
-        src={imageUrl || "https://res.cloudinary.com/dhpjnh2q0/image/upload/v1749848437/ImagePlaceHolder_mqb8gg.png"}
+        src={imageUrl && imageUrl !== "string" ? imageUrl : placeholder}
         alt={eventName}
         className="event-image"
         variants={childVariants}

@@ -1,69 +1,110 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./userprofilepage.css";
 import { motion } from "framer-motion";
 import axios from "axios";
+import { MapContainer, TileLayer, useMap } from "react-leaflet";
+import LocationPicker from "../../Shared/LocationPicker/LocationPicker";
+import "leaflet/dist/leaflet.css";
+
+function Recenter({ position, zoom }) {
+  const map = useMap();
+  useEffect(() => {
+    map.invalidateSize();
+    map.flyTo(position, zoom ?? map.getZoom());
+  }, [position, zoom, map]);
+  return null;
+}
 
 const UserProfilePage = ({ userId, token }) => {
   const navigate = useNavigate();
+
+  // profile fields
   const [profilePic, setProfilePic] = useState(null);
   const [username, setUsername] = useState("");
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState(""); // store as "lat,lng" string
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  // Fetch user data on component mount
+  // map overlay
+  const [showMap, setShowMap] = useState(false);
+  const [markerPosition, setMarkerPosition] = useState([59.3293, 18.0686]);
+  const mapRef = useRef(null);
+
+  // fetch existing profile
   useEffect(() => {
-    const fetchUserData = async () => {
+    (async () => {
       try {
-        const response = await axios.get(`/api/users/${userId}`, {
+        const { data } = await axios.get(`/api/users/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const { profilePic, username, location } = response.data;
-        setProfilePic(profilePic);
-        setUsername(username);
-        setLocation(location);
-        setLoading(false);
-      } catch (err) {
+        setProfilePic(data.profilePic);
+        setUsername(data.username);
+        // if your backend stores lat/lng, split to numbers:
+        if (data.location) {
+          const [lat, lng] = data.location.split(",").map(Number);
+          setMarkerPosition([lat, lng]);
+          setLocation(data.location);
+        }
+      } catch {
         setError("Failed to fetch user data.");
+      } finally {
         setLoading(false);
       }
-    };
-
-    fetchUserData();
+    })();
   }, [userId, token]);
+
+  const handleUseMyLocation = () => {
+    if (!navigator.geolocation) {
+      return alert("Geolocation not supported");
+    }
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        const newPos = [coords.latitude, coords.longitude];
+        setMarkerPosition(newPos);
+        if (mapRef.current) {
+          mapRef.current.invalidateSize();
+          mapRef.current.flyTo(newPos, 12); // keep this for immediate fly
+        }
+      },
+      (err) => alert("Unable to fetch location: " + err.message)
+    );
+  };
+
+  const handleLocationChange = (coords) => {
+    setMarkerPosition(coords);
+    if (mapRef.current) {
+      mapRef.current.invalidateSize();
+      mapRef.current.flyTo(coords, mapRef.current.getZoom());
+    }
+  };
 
   const handleSave = async () => {
     try {
-      const updatedData = { profilePic, username, location };
-      await axios.put(`/api/users/${userId}`, updatedData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.put(
+        `/api/users/${userId}`,
+        { profilePic, username, location },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       alert("Profile updated successfully!");
-    } catch (err) {
+    } catch {
       setError("Failed to update profile.");
     }
   };
 
-  const handleDeleteClick = () => {
-    setShowDeleteModal(true);
-  };
-
+  const handleDeleteClick = () => setShowDeleteModal(true);
   const handleConfirmDelete = async () => {
     try {
       await axios.delete(`/api/users/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       navigate("/");
-    } catch (err) {
+    } catch {
       setError("Failed to delete account.");
     }
   };
-
-  const handleCancelDelete = () => {
-    setShowDeleteModal(false);
-  };
+  const handleCancelDelete = () => setShowDeleteModal(false);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="error">{error}</p>;
@@ -77,36 +118,35 @@ const UserProfilePage = ({ userId, token }) => {
     >
       <h1>Edit Profile</h1>
       <div className="profile-form">
+        {/* Profile picture */}
         <div className="form-group">
-          <div className="profile-pic-wrapper">
-            <label htmlFor="profile-pic" className="profile-pic-label">
-              <img
-                src={profilePic || "/src/Images/The_Council_v.3.png"}
-                alt="Profile"
-                className="profile-pic-preview"
-              />
-            </label>
-            <input
-              type="file"
-              id="profile-pic"
-              accept="image/*"
-              onChange={(e) => {
-                const file = e.target.files[0];
-                if (file && file.type.startsWith("image/")) {
-                  setProfilePic(URL.createObjectURL(file)); // Preview the selected image
-                } else {
-                  alert("Please select a valid image file.");
-                }
-              }}
-              className="profile-pic-input input-field"
+          <label htmlFor="profile-pic">
+            <img
+              src={profilePic || "https://res.cloudinary.com/dhpjnh2q0/image/upload/v1749848437/ImagePlaceHolder_mqb8gg.png"}
+              alt="Profile"
+              className="profile-pic-preview"
             />
-          </div>
+          </label>
+          <input
+            type="file"
+            id="profile-pic"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files[0];
+              if (file?.type.startsWith("image/")) {
+                setProfilePic(URL.createObjectURL(file));
+              } else {
+                alert("Please select a valid image file.");
+              }
+            }}
+            className="profile-pic-input"
+          />
         </div>
 
+        {/* Username */}
         <div className="form-group">
           <input
             type="text"
-            id="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             className="input-field"
@@ -114,40 +154,72 @@ const UserProfilePage = ({ userId, token }) => {
           />
         </div>
 
+        {/* Choose Location */}
         <div className="form-group">
-          <input
-            type="text"
-            id="location"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            className="input-field"
-            placeholder="Change location"
-          />
+          <motion.button
+            type="button"
+            className="change-location-button"
+            onClick={() => setShowMap((v) => !v)}
+            whileTap={{ scale: 1.1 }}
+          >
+            Change Location
+          </motion.button>
         </div>
 
-        <motion.button onClick={handleSave} className="update-button">
+        {/* Map Overlay */}
+        {showMap && (
+          <div className="map-overlay" onClick={() => setShowMap(false)}>
+            <div onClick={(e) => e.stopPropagation()}>
+              <MapContainer
+                center={markerPosition}
+                zoom={12}
+                whenCreated={(map) => (mapRef.current = map)}
+                eventHandlers={{ zoomend: () => mapRef.current?.invalidateSize() }}
+                className="location-picker"
+              >
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                <LocationPicker
+                  position={markerPosition}
+                  onChange={handleLocationChange}
+                />
+                <Recenter position={markerPosition} zoom={12} />
+              </MapContainer>
+              <div className="map-overlay-controls">
+                <button
+                  type="button"
+                  className="gps-button"
+                  onClick={handleUseMyLocation}
+                >
+                  Use My Location
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Save / Delete */}
+        <motion.button 
+        onClick={handleSave}
+         whileTap={{ scale: 1.1 }}
+          className="update-button">
           Update Changes
         </motion.button>
-        <motion.button onClick={handleDeleteClick} className="delete-button">
+        <motion.button 
+        onClick={handleDeleteClick} 
+        whileTap={{ scale: 1.1 }}
+        className="delete-button">
           Delete Account
         </motion.button>
+
+        {/* Delete Confirmation */}
         {showDeleteModal && (
           <div className="modal-overlay">
             <div className="modal-content">
-              <p className="modal-text">
-                Are you sure you want to delete your account? This cannot be
-                undone.
-              </p>
-              <button
-                className="modal-btn confirm"
-                onClick={handleConfirmDelete}
-              >
+              <p>Are you sure you want to delete your account?</p>
+              <button onClick={handleConfirmDelete} className="modal-btn confirm">
                 Yes
               </button>
-              <button
-                className="modal-btn cancel"
-                onClick={handleCancelDelete}
-              >
+              <button onClick={handleCancelDelete} className="modal-btn cancel">
                 No
               </button>
             </div>
