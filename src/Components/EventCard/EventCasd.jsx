@@ -1,16 +1,16 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import "./EventCard.css";
 import { FaClock } from "react-icons/fa6";
 import { FaLocationDot } from "react-icons/fa6";
 import { RiAdminFill } from "react-icons/ri";
 import { BiSolidLike } from "react-icons/bi";
+import axios from "axios";
 
 const containerVariants = {
   hidden: {},
   visible: {
-    transition: {
-      staggerChildren: 0.1,
-    },
+    transition: { staggerChildren: 0.1 },
   },
 };
 
@@ -33,8 +33,34 @@ const EventCard = ({
   isClosedEvent,
   createdBy,
   location,
-  likeList,
+  likeList: initialLikeList,
 }) => {
+  // If the API returns a number (total like count), we can initialize state from the initial list length.
+  const [likeCount, setLikeCount] = useState(initialLikeList ? initialLikeList.length : 0);
+
+  const handleLike = async () => {
+    try {
+      const token = localStorage.getItem("jwtToken");
+      // Call your likeEvent endpoint.
+      const response = await axios.post(
+        "https://localhost:58296/api/Event/likeEvent",
+        JSON.stringify(eventId),
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      // Assume the API returns an updated like count (for example, 1)
+      if (typeof response.data === "number") {
+        setLikeCount(response.data);
+      }
+    } catch (err) {
+      console.error("Error liking event", err);
+    }
+  };
+
   return (
     <motion.div
       className="event-card"
@@ -83,10 +109,7 @@ const EventCard = ({
         </p>
       </motion.div>
       <motion.div className="event-location" variants={childVariants}>
-        <FaLocationDot
-          className="icons location-Logo"
-          style={{ marginTop: "3px" }}
-        />
+        <FaLocationDot className="icons location-Logo" style={{ marginTop: "3px" }} />
         <motion.p>{location}</motion.p>
       </motion.div>
       <motion.p variants={childVariants}>{description}</motion.p>
@@ -99,10 +122,10 @@ const EventCard = ({
             padding: 0,
             cursor: "pointer",
           }}
-          onClick={() => console.log("Like button clicked")}
+          onClick={handleLike}
         >
           <BiSolidLike className="icon like-icon" />
-          {likeList?.length || 0}
+          {likeCount}
         </motion.button>
       </motion.div>
       {isClosedEvent && (
@@ -113,4 +136,5 @@ const EventCard = ({
     </motion.div>
   );
 };
+
 export default EventCard;

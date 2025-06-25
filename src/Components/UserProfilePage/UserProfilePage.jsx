@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import "./userprofilepage.css";
-import { motion } from "framer-motion";
 import axios from "axios";
 import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import LocationPicker from "../../Shared/LocationPicker/LocationPicker";
 import "leaflet/dist/leaflet.css";
+import "./userprofilepage.css";
+import { motion } from "framer-motion";
 
+// Helper to recenter the map when position changes
 function Recenter({ position, zoom }) {
   const map = useMap();
   useEffect(() => {
@@ -16,44 +17,51 @@ function Recenter({ position, zoom }) {
   return null;
 }
 
-const UserProfilePage = ({ userId, token }) => {
+const UserProfilePage = ({ token: propToken }) => {
+  const token = propToken || localStorage.getItem("jwtToken");
   const navigate = useNavigate();
 
   // profile fields
   const [profilePic, setProfilePic] = useState(null);
+  const [profileFile, setProfileFile] = useState(null);
   const [username, setUsername] = useState("");
-  const [location, setLocation] = useState(""); // store as "lat,lng" string
+  const [location, setLocation] = useState({ lat: null, lng: null });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [updateSuccess, setUpdateSuccess] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [userId, setUserId] = useState("");
 
-  // map overlay
+  // map overlay state
   const [showMap, setShowMap] = useState(false);
   const [markerPosition, setMarkerPosition] = useState([59.3293, 18.0686]);
   const mapRef = useRef(null);
 
-  // fetch existing profile
+  // Fetch existing profile
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await axios.get(`/api/users/${userId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setProfilePic(data.profilePic);
-        setUsername(data.username);
-        // if your backend stores lat/lng, split to numbers:
-        if (data.location) {
-          const [lat, lng] = data.location.split(",").map(Number);
-          setMarkerPosition([lat, lng]);
-          setLocation(data.location);
+        const { data } = await axios.get(
+          "https://localhost:58296/api/User/me",
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        if (data.latitude != null && data.longitude != null) {
+          const lat = parseFloat(data.latitude);
+          const lng = parseFloat(data.longitude);
+          const apiPos = [lat, lng];
+          setMarkerPosition(apiPos);
+          setLocation({ lat, lng });
         }
+        setProfilePic(data.profilePicture);
+        setUsername(data.userName);
+        setUserId(data.userId);
       } catch {
         setError("Failed to fetch user data.");
       } finally {
         setLoading(false);
       }
     })();
-  }, [userId, token]);
+  }, [token]);
 
   const handleUseMyLocation = () => {
     if (!navigator.geolocation) {
@@ -63,9 +71,10 @@ const UserProfilePage = ({ userId, token }) => {
       ({ coords }) => {
         const newPos = [coords.latitude, coords.longitude];
         setMarkerPosition(newPos);
+        setLocation({ lat: coords.latitude, lng: coords.longitude });
         if (mapRef.current) {
           mapRef.current.invalidateSize();
-          mapRef.current.flyTo(newPos, 12); // keep this for immediate fly
+          mapRef.current.flyTo(newPos, 12);
         }
       },
       (err) => alert("Unable to fetch location: " + err.message)
@@ -74,6 +83,7 @@ const UserProfilePage = ({ userId, token }) => {
 
   const handleLocationChange = (coords) => {
     setMarkerPosition(coords);
+    setLocation({ lat: coords[0], lng: coords[1] });
     if (mapRef.current) {
       mapRef.current.invalidateSize();
       mapRef.current.flyTo(coords, mapRef.current.getZoom());
@@ -81,24 +91,48 @@ const UserProfilePage = ({ userId, token }) => {
   };
 
   const handleSave = async () => {
+    setError("");
+    setUpdateSuccess(false);
     try {
-      await axios.put(
-        `/api/users/${userId}`,
-        { profilePic, username, location },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      alert("Profile updated successfully!");
-    } catch {
-      setError("Failed to update profile.");
+      const url = `https://localhost:58296/api/User/${userId}`;
+      if (profileFile) {
+        const formData = new FormData();
+        formData.append("UserName", username);
+        formData.append("Latitude", location.lat != null ? location.lat.toString() : "");
+        formData.append("Longitude", location.lng != null ? location.lng.toString() : "");
+        formData.append("NewProfilePicture", profileFile);
+        await axios.put(url, formData, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      } else {
+        const payload = {
+          UserName: username,
+          OldImageUrl: profilePic, 
+          Latitude: location.lat != null ? location.lat.toString() : "",
+          Longitude: location.lng != null ? location.lng.toString() : "",
+        };
+        await axios.put(url, payload, {
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        });
+      }
+      // Instead of alert, set updateSuccess flag to true
+      setUpdateSuccess(true);
+    } catch (err) {
+      const msg = err.response?.data?.message || err.message;
+      setError(msg);
     }
   };
 
   const handleDeleteClick = () => setShowDeleteModal(true);
   const handleConfirmDelete = async () => {
     try {
-      await axios.delete(`/api/users/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.delete(
+        `https://localhost:58296/api/User/${userId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       navigate("/");
     } catch {
       setError("Failed to delete account.");
@@ -107,7 +141,6 @@ const UserProfilePage = ({ userId, token }) => {
   const handleCancelDelete = () => setShowDeleteModal(false);
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p className="error">{error}</p>;
 
   return (
     <motion.div
@@ -117,6 +150,14 @@ const UserProfilePage = ({ userId, token }) => {
       exit={{ opacity: 0, y: -100, transition: { duration: 0.5 } }}
     >
       <h1>Edit Profile</h1>
+
+      {error && <p className="error">{error}</p>}
+      {updateSuccess && (
+        <div className="update-success">
+          <p className="Success-Message">Updated</p>
+        </div>
+      )}
+
       <div className="profile-form">
         {/* Profile picture */}
         <div className="form-group">
@@ -134,6 +175,7 @@ const UserProfilePage = ({ userId, token }) => {
             onChange={(e) => {
               const file = e.target.files[0];
               if (file?.type.startsWith("image/")) {
+                setProfileFile(file);
                 setProfilePic(URL.createObjectURL(file));
               } else {
                 alert("Please select a valid image file.");
@@ -154,7 +196,7 @@ const UserProfilePage = ({ userId, token }) => {
           />
         </div>
 
-        {/* Choose Location */}
+        {/* Change Location */}
         <div className="form-group">
           <motion.button
             type="button"
@@ -197,21 +239,23 @@ const UserProfilePage = ({ userId, token }) => {
           </div>
         )}
 
-        {/* Save / Delete */}
+        {/* Save / Delete buttons */}
         <motion.button 
-        onClick={handleSave}
-         whileTap={{ scale: 1.1 }}
-          className="update-button">
+          onClick={handleSave}
+          whileTap={{ scale: 1.1 }}
+          className="update-button"
+        >
           Update Changes
         </motion.button>
         <motion.button 
-        onClick={handleDeleteClick} 
-        whileTap={{ scale: 1.1 }}
-        className="delete-button">
+          onClick={handleDeleteClick} 
+          whileTap={{ scale: 1.1 }}
+          className="delete-button"
+        >
           Delete Account
         </motion.button>
 
-        {/* Delete Confirmation */}
+        {/* Delete Confirmation Modal */}
         {showDeleteModal && (
           <div className="modal-overlay">
             <div className="modal-content">

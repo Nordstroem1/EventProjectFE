@@ -101,3 +101,9 @@ input{
     margin-bottom: 30px;
     font-size: 1rem;
 }
+.Success-Message{
+  color: #036320;
+  font-weight: 500;
+  font-size: 1.2rem;
+  text-align: center;
+}

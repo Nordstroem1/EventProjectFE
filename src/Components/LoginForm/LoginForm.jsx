@@ -60,7 +60,6 @@ const LoginForm = () => {
       if (returnedToken) {
         try {
           localStorage.setItem('jwtToken', returnedToken);
-          console.log('Token stored in localStorage:', localStorage.getItem('jwtToken'));
         } catch (storageErr) {
           console.error('Failed to write token into localStorage', storageErr);
           setError('Unable to save authentication token');
@@ -71,7 +70,6 @@ const LoginForm = () => {
         setError('No authentication token received');
         return;
       }
-      // After storing token, navigate
       navigate('/HomePage');
       return;
     } catch (err) {

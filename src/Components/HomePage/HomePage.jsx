@@ -22,7 +22,6 @@ const HomePage = () => {
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        // Handle both direct array and envelope { data: [...] }
         let eventsPayload = [];
         if (Array.isArray(res.data)) {
           eventsPayload = res.data;
