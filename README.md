@@ -1,6 +1,6 @@
 # 🧠 EventManager
 
-EventManager var något jag skapat till mig och mina vänner för att kunna lösa de årliga utmaningarna, så som att vandra till exempel. Den är inte launchad än men jag har byggt en backend (länk här:[Backend Repository]([https://johans-projekt.se](https://github.com/Nordstroem1/EventForFriends)).
+EventManager var något jag skapat till mig och mina vänner för att kunna lösa de årliga utmaningarna, så som att vandra till exempel. Den är inte launchad än men jag har byggt en backend [länk här](https://github.com/Nordstroem1/EventForFriends).
 
 ## 🚀 Funktioner
 
