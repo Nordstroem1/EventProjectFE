@@ -1,12 +1,31 @@
-# React + Vite
+# 🧠 EventManager
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+EventManager var något jag skapat till mig och mina vänner för att kunna lösa de årliga utmaningarna, så som att vandra till exempel. Den är inte launchad än men jag har byggt en backend (länk här:[Backend Repository]([https://johans-projekt.se](https://github.com/Nordstroem1/EventForFriends)).
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Funktioner
 
-## Expanding the ESLint configuration
+- ✅ Refistrering med hjälp av Microsoft Identity
+- ⚙️ Kartintegration för att räkna ut avstånd mellan användare och Eventet som tar plats.
+- 👍 Likefunktion på Events.
+- 📊 Användare kan enbart hantera sin egna uppgifter.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🖼️ Förhandsvisning
+
+![Logga in]([https://din-bild-url.com/bild.jpg](https://res.cloudinary.com/dhpjnh2q0/image/upload/v1751039912/Sk%C3%A4rmbild_2025-06-27_175814_m3gt2s.png))
+![Registrera]([https://res.cloudinary.com/dhpjnh2q0/image/upload/v1751040022/Sk%C3%A4rmbild_2025-06-27_175955_kyflje.png))
+![Skapa ett Event]([https://res.cloudinary.com/dhpjnh2q0/image/upload/v1751040091/Sk%C3%A4rmbild_2025-06-27_180117_hpcuqd.png)
+![Dashboard]([https://res.cloudinary.com/dhpjnh2q0/image/upload/v1751040232/Sk%C3%A4rmbild_2025-06-27_180329_pc9mym.png)
+
+
+## 🛠️ Tekniker som används
+
+- React + Vite
+- HTML / CSS / JavaScript
+
+## 📦 Installation
+
+```bash
+git clone https://github.com/ditt-användarnamn/ditt-repo.git
+cd ditt-repo
+dotnet run
