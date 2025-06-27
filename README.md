@@ -2,7 +2,6 @@
 
 EventManager var något jag skapat till mig och mina vänner för att kunna lösa de årliga utmaningarna, så som att vandra till exempel. Den är inte launchad än men jag har byggt en backend (länk här:[Backend Repository]([https://johans-projekt.se](https://github.com/Nordstroem1/EventForFriends)).
 
-
 ## 🚀 Funktioner
 
 - ✅ Refistrering med hjälp av Microsoft Identity
@@ -27,7 +26,8 @@ EventManager var något jag skapat till mig och mina vänner för att kunna lös
 ## 🛠️ Tekniker som används
 
 - React + Vite
-- HTML / CSS / JavaScript
+- HTML / CSS / JavaScript /
+- Framer Motion för mjukare användarupplevelse
 
 ## 📦 Installation
 
