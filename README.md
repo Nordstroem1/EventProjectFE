@@ -32,6 +32,6 @@ EventManager var något jag skapat till mig och mina vänner för att kunna lös
 ## 📦 Installation
 
 ```bash
-git clone https://github.com/ditt-användarnamn/ditt-repo.git
+git clone https://github.com/Nordstroem1/EventProjectFE.git
 cd ditt-repo
 dotnet run
